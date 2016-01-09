@@ -15,7 +15,6 @@ django-timezones==0.2
 django-configurations==1.0
 dj-database-url==0.2.2
 django-statici18n==1.1.5
-django-validatorchain==0.1
 django-sortedm2m==1.1.1
 # Strict due to API compatibility issues
 django-mptt==0.8.0
