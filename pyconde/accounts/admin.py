@@ -22,21 +22,19 @@ class WithChildrenFilter(SimpleListFilter):
         return queryset
 
 
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'user', 'display_name', 'full_name',
-                    'accept_pysv_conferences', 'accept_ep_conferences',
-                    'twitter', 'organisation')
-    list_display_links = ('pk', 'user')
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('email', 'full_name', 'is_staff', 'is_active', 'twitter',
+        'date_joined', 'organisation', 'accept_pysv_conferences',
+        'accept_ep_conferences')
     list_filter = (WithChildrenFilter, 'accept_pysv_conferences',
                    'accept_ep_conferences')
-    search_fields = ('user__username', 'full_name', 'display_name', 'twitter')
+    search_fields = ('email', 'full_name', 'twitter', 'organisation')
 
 
-admin.site.register(models.Profile, ProfileAdmin)
+admin.site.register(models.User, UserAdmin)
 
 
 class BadgeStatusAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
 admin.site.register(models.BadgeStatus, BadgeStatusAdmin)
-
