@@ -14,7 +14,7 @@ from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 
-from redis_cache import get_redis_connection
+from django_redis import get_redis_connection
 
 from . import settings as app_settings
 from . import tasks

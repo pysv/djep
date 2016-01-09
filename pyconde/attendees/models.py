@@ -488,7 +488,7 @@ class VenueTicket(Ticket):
     shirtsize = models.ForeignKey(TShirtSize, blank=True, null=True,
                                   verbose_name=_('Desired T-Shirt size'))
     dietary_preferences = models.ManyToManyField('DietaryPreference',
-        verbose_name=_('Dietary preferences'), null=True, blank=True)
+        verbose_name=_('Dietary preferences'), blank=True)
 
     sponsor = models.ForeignKey('sponsorship.Sponsor', null=True, blank=True,
         verbose_name=_('Sponsor'))

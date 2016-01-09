@@ -9,8 +9,6 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from timezones.fields import TimeZoneField
 
-from pyconde import south_rules  # keep to make South still work
-
 
 CONFERENCE_CACHE = {}
 

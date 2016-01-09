@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
-from django.contrib.markup.templatetags.markup import markdown
+from markup_deprecated.templatetags.markup import markdown
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.dispatch import receiver
@@ -15,7 +15,6 @@ from cms.models import CMSPlugin
 
 from easy_thumbnails.fields import ThumbnailerImageField
 from taggit.managers import TaggableManager
-from validatorchain import ValidatorChain
 
 from . import validators
 
@@ -71,8 +70,7 @@ class Profile(models.Model):
     avatar = ThumbnailerImageField(
         _('avatar'), upload_to='avatars', null=True, blank=True,
         help_text=avatar_help_text,
-        validators=ValidatorChain().add(validators.avatar_dimension)
-                                   .add(validators.avatar_format, skip_on_error=True)
+        validators=[validators.avatar_dimension, validators.avatar_format]
     )
     num_accompanying_children = models.PositiveIntegerField(_('Number of accompanying children'),
         null=True, blank=True, default=0)

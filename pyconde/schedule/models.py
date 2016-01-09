@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from django.contrib.markup.templatetags.markup import markdown
+from markup_deprecated.templatetags.markup import markdown
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -66,7 +66,7 @@ class Session(LocationMixin, proposal_models.AbstractProposal):
     proposal = models.ForeignKey(proposal_models.Proposal, blank=True,
         null=True, related_name='session', verbose_name=_("proposal"))
     location = models.ManyToManyField(conference_models.Location,
-        verbose_name=_("location"), blank=True, null=True)
+        verbose_name=_("location"), blank=True)
     is_global = models.BooleanField(_("is global"), default=False)
     released = models.BooleanField(_("released"), default=False)
     slides_url = models.URLField(_("Slides URL"), blank=True, null=True)
@@ -182,7 +182,7 @@ class SideEvent(LocationMixin, models.Model):
     section = models.ForeignKey(conference_models.Section, blank=True,
         null=True, verbose_name=_("section"), related_name='side_events')
     location = models.ManyToManyField(conference_models.Location, blank=True,
-        null=True, verbose_name=_("location"))
+        verbose_name=_("location"))
     is_global = models.BooleanField(_("is global"), default=False)
     is_pause = models.BooleanField(_("is break"), default=False)
     is_recordable = models.BooleanField(_("is recordable"), default=False)
@@ -192,7 +192,7 @@ class SideEvent(LocationMixin, models.Model):
         verbose_name=_("icon"), choices=EVENT_ICON_CHOICES)
     video_url = models.URLField(_("Video URL"), blank=True, null=True)
 
-    lightning_talks = SortedManyToManyField('lightningtalks.LightningTalk', null=True,
+    lightning_talks = SortedManyToManyField('lightningtalks.LightningTalk',
                                             blank=True)
 
     objects = models.Manager()
@@ -228,7 +228,7 @@ class CompleteSchedulePlugin(CMSPlugin):
     title = models.CharField(max_length=100, blank=True,
         verbose_name=_('title'))
     sections = models.ManyToManyField(conference_models.Section,
-        blank=True, null=True, verbose_name=_("sections"))
+        blank=True, verbose_name=_("sections"))
     row_duration = models.IntegerField(_('Duration of one row'),
         choices=ROW_DURATION_CHOICES, default=ROW_DURATION_15)
     merge_sections = models.BooleanField(_('Merge different section into same table'),
