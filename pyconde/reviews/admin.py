@@ -6,7 +6,7 @@ from django.contrib.auth import models as auth_models
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
-from django.db.transaction import commit_on_success
+from django.db.transaction import atomic
 from django.http import HttpResponse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -34,7 +34,7 @@ export_reviewed_proposals.short_description = _("Export as CSV")
 
 
 def accept_reviewer_request(modeladmin, request, queryset):
-    with commit_on_success():
+    with atomic():
         perm = utils.get_review_permission()
         for reviewer in queryset.select_related('user').all():
             reviewer.user.user_permissions.add(perm)
@@ -44,7 +44,7 @@ accept_reviewer_request.short_description = _("Accept selected user requests to 
 
 
 def decline_reviewer_request(modeladmin, request, queryset):
-    with commit_on_success():
+    with atomic():
         perm = utils.get_review_permission()
         for reviewer in queryset.select_related('user').all():
             reviewer.user.user_permissions.remove(perm)
