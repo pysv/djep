@@ -66,16 +66,10 @@ class Base(Configuration):
 
     ROOT_URLCONF = '%s.urls' % PROJECT_NAME
 
-    TEMPLATE_DIRS = (
-        os.path.join(BASE_DIR, 'skins', 'default'),
-        os.path.join(BASE_DIR, 'skins', 'ep14'),
-    )
-
     INSTALLED_APPS = [
         # Skins
-        'pyconde.skins.ep14',
+        # 'pyconde.skins.ep14',
         'pyconde.skins.default',
-
         'djangocms_admin_style',
         'django.contrib.admin',
         'django.contrib.auth',
@@ -84,23 +78,18 @@ class Base(Configuration):
         'django.contrib.sessions',
         'django.contrib.sites',
         'django.contrib.staticfiles',
-        'django.contrib.markup',
+        'markup_deprecated',
         'sortedm2m',
         'crispy_forms',
-        'south',
         'easy_thumbnails',
         'filer',
         'compressor',
         'djangocms_text_ckeditor',  # must be before 'cms'!
         'cms',
-        'cms.stacks',
+        'treebeard',
         'mptt',
         'menus',
         'sekizai',
-        'userprofiles',
-        'userprofiles.contrib.accountverification',
-        'userprofiles.contrib.emailverification',
-        'userprofiles.contrib.profiles',
         'taggit',
         'haystack',
         #'tinymce', # If you want tinymce, add it in the settings.py file.
@@ -109,10 +98,10 @@ class Base(Configuration):
         'gunicorn',
         'statici18n',
 
-        'cms.plugins.inherit',
-        'cms.plugins.googlemap',
-        'cms.plugins.link',
-        'cms.plugins.snippet',
+        'djangocms_inherit',
+        'djangocms_googlemap',
+        'djangocms_link',
+        'djangocms_snippet',
         #'cms.plugins.twitter',
         #'cms.plugins.text',
         'cmsplugin_filer_file',
@@ -154,22 +143,34 @@ class Base(Configuration):
         'social_auth.middleware.SocialAuthExceptionMiddleware',
     ]
 
-    TEMPLATE_CONTEXT_PROCESSORS = Configuration.TEMPLATE_CONTEXT_PROCESSORS + (
-        'django.core.context_processors.debug',
-        'django.core.context_processors.request',
-        'sekizai.context_processors.sekizai',
-        'pyconde.conference.context_processors.current_conference',
-        'pyconde.reviews.context_processors.review_roles',
-        # 'pyconde.context_processors.less_settings',
-        'social_auth.context_processors.social_auth_backends',
-    )
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.media',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                    'sekizai.context_processors.sekizai',
+                    'pyconde.conference.context_processors.current_conference',
+                    'pyconde.reviews.context_processors.review_roles',
+                    'social_auth.context_processors.social_auth_backends',
+                ],
+                # Beware before activating this! Grappelli has problems with admin
+                # inlines and the template backend option 'string_if_invalid'.
+                'string_if_invalid': values.Value('', environ_name='TEMPLATE_STRING_IF_INVALID'),
+            },
+        },
+    ]
 
     DATABASES = values.DatabaseURLValue(
-            'sqlite:///{0}/djep.db'.format(BASE_DIR),
-            environ_prefix='DJANGO')
-
-    # Disable south migrations during unittests
-    SOUTH_TESTS_MIGRATE = False
+        'sqlite:///{0}/djep.db'.format(BASE_DIR),
+        environ_prefix='DJANGO'
+    )
 
     FIXTURE_DIRS = (
         os.path.join(BASE_DIR, 'fixtures'),
@@ -195,10 +196,6 @@ class Base(Configuration):
     DEBUG = values.BooleanValue(False)
 
     DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False}
-
-    @property
-    def TEMPLATE_DEBUG(self):
-        return self.DEBUG
 
     @property
     def THUMBNAIL_DEBUG(self):
@@ -241,40 +238,6 @@ class Base(Configuration):
         'easy_thumbnails.processors.filters',
     )
     THUMBNAIL_SIZE = 100
-
-    ###########################################################################
-    #
-    # Profile settings
-    #    Here we configure what profile module is used and other aspects of a
-    #    registered user's profile.
-    #
-    USERPROFILES_CHECK_UNIQUE_EMAIL = True
-
-    USERPROFILES_DOUBLE_CHECK_EMAIL = False
-
-    USERPROFILES_DOUBLE_CHECK_PASSWORD = True
-
-    USERPROFILES_REGISTRATION_FULLNAME = True
-
-    USERPROFILES_USE_ACCOUNT_VERIFICATION = True
-
-    USERPROFILES_USE_EMAIL_VERIFICATION = True
-
-    USERPROFILES_USE_PROFILE = True
-
-    USERPROFILES_INLINE_PROFILE_ADMIN = True
-
-    USERPROFILES_USE_PROFILE_VIEW = False
-
-    USERPROFILES_REGISTRATION_FORM = 'pyconde.accounts.forms.ProfileRegistrationForm'
-
-    USERPROFILES_PROFILE_FORM = 'pyconde.accounts.forms.ProfileForm'
-
-    USERPROFILES_EMAIL_VERIFICATION_DONE_URL = 'userprofiles_profile_change'
-
-    AUTH_PROFILE_MODULE = 'accounts.Profile'
-
-    ACCOUNTS_FALLBACK_TO_GRAVATAR = False
 
     CHILDREN_DATA_DISABLED = True
 
@@ -348,7 +311,6 @@ class Base(Configuration):
     SCHEDULE_ATTENDING_POSSIBLE = values.ListValue(['training'])
     SCHEDULE_CACHE_SCHEDULE = values.BooleanValue(True)
     SCHEDULE_CACHE_TIMEOUT = values.IntegerValue(300)
-
 
     ###########################################################################
     #
@@ -500,7 +462,7 @@ class Base(Configuration):
 
     CACHES = values.DictValue({
         'default': {
-            'BACKEND': 'redis_cache.cache.RedisCache',
+            'BACKEND': 'django_redis.cache.RedisCache',
             'LOCATION': 'localhost:6379:0',
             'OPTIONS': {
                 'PARSER_CLASS': 'redis.connection.HiredisParser'
@@ -594,6 +556,7 @@ class Testing(Dev):
     FIXTURE_DIRS = (os.path.join(Base.BASE_DIR, 'fixtures'),)
 
     CELERY_ALWAYS_EAGER = True
+    CELERY_ACCEPT_CONTENT = ['json']
     PURCHASE_INVOICE_DISABLE_RENDERING = True
 
 
