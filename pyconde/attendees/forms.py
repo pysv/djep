@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext, pgettext
 from django.utils.safestring import mark_safe
-from django.contrib.auth import models as auth_models
+from django.contrib.auth import get_user_model
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, HTML
@@ -302,7 +302,7 @@ class TicketAssignmentForm(forms.Form):
 
     def clean_username(self):
         val = self.cleaned_data['username']
-        if not auth_models.User.objects.filter(username=val).exists():
+        if not get_user_model().objects.filter(username=val).exists():
             raise ValidationError(_("Couldn't find a user with this username."))
         return val
 

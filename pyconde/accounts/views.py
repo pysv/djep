@@ -5,7 +5,7 @@ from itertools import chain
 from django.conf import settings
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib import messages
-from django.contrib.auth import models as auth_models, logout as auth_logout
+from django.contrib.auth import get_user_model, models as auth_models, logout as auth_logout
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.mail import send_mass_mail
@@ -114,7 +114,7 @@ class ProfileView(generic_views.TemplateView):
     template_name = 'userprofiles/profile_view.html'
 
     def get_context_data(self, uid):
-        user = get_object_or_404(auth_models.User, pk=uid)
+        user = get_object_or_404(get_user_model(), pk=uid)
         speaker_profile = user.speaker_profile
         sessions = None
         profile = user.profile
@@ -146,7 +146,7 @@ class LoginEmailRequestView(generic_views.FormView):
         backend = data['backend']
         user_pk = data['kwargs']['user']['pk']
         if form.cleaned_data['email']:
-            user = auth_models.User.objects.get(pk=user_pk)
+            user = get_user_model().objects.get(pk=user_pk)
             EmailVerification.objects.create_new_verification(
                 user, form.cleaned_data['email'])
         self.request.session['_email_passed_{0}'.format(user_pk)] = True

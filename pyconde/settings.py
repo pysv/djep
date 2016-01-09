@@ -3,6 +3,8 @@ import os
 from email.utils import parseaddr
 from configurations import Configuration, values
 
+import dj_database_url
+
 
 ugettext = lambda s: s
 
@@ -82,8 +84,12 @@ class Base(Configuration):
         'sortedm2m',
         'crispy_forms',
         'easy_thumbnails',
-        'filer',
         'compressor',
+
+        # Custom apps 1
+        'pyconde.core',
+        'pyconde.accounts',  # pyconde.accounts musst before cms
+
         'djangocms_text_ckeditor',  # must be before 'cms'!
         'cms',
         'treebeard',
@@ -94,7 +100,6 @@ class Base(Configuration):
         'haystack',
         #'tinymce', # If you want tinymce, add it in the settings.py file.
         'django_gravatar',
-        'social_auth',
         'gunicorn',
         'statici18n',
 
@@ -104,8 +109,6 @@ class Base(Configuration):
         'djangocms_snippet',
         #'cms.plugins.twitter',
         #'cms.plugins.text',
-        'cmsplugin_filer_file',
-        'cmsplugin_filer_image',
         'djangocms_style',
         #'cmsplugin_news',
         'pyconde.testimonials',
@@ -116,9 +119,8 @@ class Base(Configuration):
         'pyconde.proposals',
         'pyconde.sponsorship',
 
-        # Custom apps
-        'pyconde.core',
-        'pyconde.accounts',
+
+        # Custom apps 2
         'pyconde.attendees',
         'pyconde.events',
         'pyconde.reviews',
@@ -140,7 +142,6 @@ class Base(Configuration):
         'cms.middleware.user.CurrentUserMiddleware',
         'cms.middleware.toolbar.ToolbarMiddleware',
         'cms.middleware.language.LanguageCookieMiddleware',
-        'social_auth.middleware.SocialAuthExceptionMiddleware',
     ]
 
     TEMPLATES = [
@@ -158,7 +159,6 @@ class Base(Configuration):
                     'sekizai.context_processors.sekizai',
                     'pyconde.conference.context_processors.current_conference',
                     'pyconde.reviews.context_processors.review_roles',
-                    'social_auth.context_processors.social_auth_backends',
                 ],
                 # Beware before activating this! Grappelli has problems with admin
                 # inlines and the template backend option 'string_if_invalid'.
@@ -167,10 +167,14 @@ class Base(Configuration):
         },
     ]
 
-    DATABASES = values.DatabaseURLValue(
-        'sqlite:///{0}/djep.db'.format(BASE_DIR),
-        environ_prefix='DJANGO'
-    )
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='postgres://djep:djep@localhost/djep',
+            env='DEFAULT_DATABASE_URL'
+        )
+    }
+    # Number of seconds database connections should persist for
+    DATABASES['default']['CONN_MAX_AGE'] = 600
 
     FIXTURE_DIRS = (
         os.path.join(BASE_DIR, 'fixtures'),
@@ -201,6 +205,7 @@ class Base(Configuration):
     def THUMBNAIL_DEBUG(self):
         return self.DEBUG
 
+    AUTH_USER_MODEL = 'accounts.User'
     ###########################################################################
     #
     # File settings
@@ -234,7 +239,6 @@ class Base(Configuration):
     THUMBNAIL_PROCESSORS = (
         'easy_thumbnails.processors.colorspace',
         'easy_thumbnails.processors.autocrop',
-        'filer.thumbnail_processors.scale_and_crop_with_subject_location',
         'easy_thumbnails.processors.filters',
     )
     THUMBNAIL_SIZE = 100
@@ -380,49 +384,6 @@ class Base(Configuration):
     LOGIN_REDIRECT_URL = '/accounts/welcome/'
 
     LOGOUT_REDIRECT_URL = '/'
-
-    SOCIAL_AUTH_PIPELINE = (
-        'social_auth.backends.pipeline.social.social_auth_user',
-        'social_auth.backends.pipeline.user.get_username',
-        'social_auth.backends.pipeline.user.create_user',
-        'social_auth.backends.pipeline.social.associate_user',
-        'social_auth.backends.pipeline.social.load_extra_data',
-        'social_auth.backends.pipeline.user.update_user_details',
-        'social_auth.backends.pipeline.misc.save_status_to_session',
-        'pyconde.accounts.pipeline.show_request_email_form',
-        'pyconde.accounts.pipeline.create_profile',
-    )
-
-    GITHUB_APP_ID = values.Value()
-
-    GITHUB_API_SECRET = values.Value()
-
-    GITHUB_EXTENDED_PERMISSIONS = ['user:email']
-
-    TWITTER_CONSUMER_KEY = values.Value()
-
-    TWITTER_CONSUMER_SECRET = values.Value()
-
-    GOOGLE_OAUTH2_CLIENT_ID = values.Value()
-
-    GOOGLE_OAUTH2_CLIENT_SECRET = values.Value()
-
-    FACEBOOK_APP_ID = values.Value()
-
-    FACEBOOK_API_SECRET = values.Value()
-
-    @property
-    def AUTHENTICATION_BACKENDS(self):
-        backends = ['django.contrib.auth.backends.ModelBackend']
-        if self.GITHUB_APP_ID and self.GITHUB_API_SECRET:
-            backends.insert(-1, 'social_auth.backends.contrib.github.GithubBackend')
-        if self.TWITTER_CONSUMER_KEY and self.WITTER_CONSUMER_SECRET:
-            backends.insert(-1, 'social_auth.backends.twitter.TwitterBackend')
-        if self.FACEBOOK_API_SECRET and self.FACEBOOK_APP_ID:
-            backends.insert(-1, 'social_auth.backends.facebook.FacebookBackend')
-        if self.GOOGLE_OAUTH2_CLIENT_SECRET and self.GOOGLE_OAUTH2_CLIENT_ID:
-            backends.insert(-1, 'social_auth.backends.google.GoogleOAuth2Backend')
-        return backends
 
     ###########################################################################
     #

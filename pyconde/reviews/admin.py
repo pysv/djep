@@ -2,7 +2,6 @@
 
 from django import forms
 from django.contrib import admin
-from django.contrib.auth import models as auth_models
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
@@ -72,8 +71,7 @@ class ReviewMetaDataAdminForm(forms.ModelForm):
         proposals = self.fields['proposal'].queryset.select_related('conference') \
                                                     .only('title', 'conference')
         versions = self.fields['latest_proposalversion'].queryset \
-                                                  .select_related('original') \
-                                                  .only('original__title', 'pub_date')
+            .select_related('original').only('original__title', 'pub_date')
         self.fields['proposal'].queryset = proposals
         self.fields['latest_proposalversion'].queryset = versions
 
@@ -169,16 +167,3 @@ admin.site.register(models.ProposalMetaData, ProposalMetaDataAdmin)
 admin.site.register(models.ProposalVersion, ProposalVersionAdmin)
 admin.site.register(models.Review, ReviewAdmin)
 admin.site.register(models.Reviewer, ReviewerAdmin)
-
-
-# Add some more columns and filters to the user admin
-class UserAdmin(BaseUserAdmin):
-    list_display = list(BaseUserAdmin.list_display) + ['is_superuser', 'is_reviewer']
-
-    def is_reviewer(self, instance):
-        return utils.can_review_proposal(instance)
-    is_reviewer.boolean = True
-    is_reviewer.short_description = _('Can review')
-
-admin.site.unregister(auth_models.User)
-admin.site.register(auth_models.User, UserAdmin)

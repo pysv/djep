@@ -8,6 +8,7 @@ from django.utils.timezone import now
 from django.contrib.auth import models as auth_models
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
+from django.conf import settings as django_settings
 
 from pyconde.proposals import models as proposal_models
 from pyconde.conference import models as conference_models
@@ -129,7 +130,7 @@ class ProposalVersion(proposal_models.AbstractProposal):
     original = models.ForeignKey(proposal_models.Proposal,
         verbose_name=_("original proposal"),
         related_name='versions')
-    creator = models.ForeignKey(auth_models.User,
+    creator = models.ForeignKey(django_settings.AUTH_USER_MODEL,
         verbose_name=_("creator"))
     pub_date = models.DateTimeField(verbose_name=_("publication date"))
 
@@ -152,7 +153,7 @@ class Review(models.Model):
     been marked as closed for reviews. Neither should other reviewers be able
     to read the review before that that in order not to be influenced by it.
     """
-    user = models.ForeignKey(auth_models.User, verbose_name=_("user"))
+    user = models.ForeignKey(django_settings.AUTH_USER_MODEL, verbose_name=_("user"))
     rating = models.CharField(choices=RATING_CHOICES, max_length=2,
         verbose_name=_("rating"))
     summary = models.TextField(verbose_name=_("summary"))
@@ -178,7 +179,7 @@ class Comment(models.Model):
     Once a comment is made, everyone involved in the dicussion so far should
     receive a notification include the actual content of the comment.
     """
-    author = models.ForeignKey(auth_models.User, verbose_name=_("author"))
+    author = models.ForeignKey(django_settings.AUTH_USER_MODEL, verbose_name=_("author"))
     content = models.TextField(verbose_name=_("content"))
     pub_date = models.DateTimeField(default=now,
         verbose_name=_("publication date"))
@@ -189,7 +190,7 @@ class Comment(models.Model):
     deleted = models.BooleanField(default=False, verbose_name=_("deleted"))
     deleted_date = models.DateTimeField(null=True, blank=True,
         verbose_name=_("deleted at"))
-    deleted_by = models.ForeignKey(auth_models.User, null=True, blank=True,
+    deleted_by = models.ForeignKey(django_settings.AUTH_USER_MODEL, null=True, blank=True,
         verbose_name=_("deleted by"),
         related_name='deleted_comments')
     deleted_reason = models.TextField(blank=True, null=True,
@@ -225,7 +226,7 @@ class Reviewer(models.Model):
     )
 
     conference = models.ForeignKey(conference_models.Conference, on_delete=models.CASCADE)
-    user = models.ForeignKey(auth_models.User, verbose_name=_("user"))
+    user = models.ForeignKey(django_settings.AUTH_USER_MODEL, verbose_name=_("user"))
     state = models.PositiveSmallIntegerField(_("state"), default=STATE_PENDING, choices=STATE_CHOICES)
 
     objects = conference_models.CurrentConferenceManager()
@@ -350,8 +351,8 @@ signals.post_save.connect(update_proposal_metadata, sender=ProposalVersion, disp
 signals.post_delete.connect(update_proposal_metadata, sender=Comment, dispatch_uid='reviews.update_proposal_comments_count_del')
 signals.post_delete.connect(update_proposal_metadata, sender=Review, dispatch_uid='reviews.update_proposal_reviews_count_del')
 signals.post_delete.connect(update_proposal_metadata, sender=ProposalVersion, dispatch_uid='reviews.update_proposal_version_count_del')
-signals.post_save.connect(clear_reviewer_cache, sender=auth_models.User, dispatch_uid='reviews.clear_reviewer_cache')
-signals.post_delete.connect(clear_reviewer_cache, sender=auth_models.User, dispatch_uid='reviews.clear_reviewer_cache_del')
+signals.post_save.connect(clear_reviewer_cache, sender=django_settings.AUTH_USER_MODEL, dispatch_uid='reviews.clear_reviewer_cache')
+signals.post_delete.connect(clear_reviewer_cache, sender=django_settings.AUTH_USER_MODEL, dispatch_uid='reviews.clear_reviewer_cache_del')
 signals.post_save.connect(clear_reviewer_cache, sender=auth_models.Permission, dispatch_uid='reviews.clear_reviewer_cache_perm')
 signals.post_delete.connect(clear_reviewer_cache, sender=auth_models.Permission, dispatch_uid='reviews.clear_reviewer_cache_perm_del')
 signals.post_save.connect(clear_reviewer_cache, sender=auth_models.Group, dispatch_uid='reviews.clear_reviewer_group')
