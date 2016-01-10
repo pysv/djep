@@ -2,6 +2,8 @@ import json
 
 from itertools import chain
 
+from braces.views import LoginRequiredMixin
+
 from django.conf import settings
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib import messages
@@ -15,11 +17,6 @@ from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic as generic_views
-
-from userprofiles.contrib.emailverification.models import EmailVerification
-from userprofiles.contrib.emailverification.views import EmailChangeView as BaseEmailChangeView
-from userprofiles.contrib.profiles.views import ProfileChangeView as BaseProfileChangeView
-from userprofiles.mixins import LoginRequiredMixin
 
 from pyconde.conference.models import current_conference
 from pyconde.reviews.models import Reviewer
@@ -130,54 +127,6 @@ class ProfileView(generic_views.TemplateView):
             'profile': profile,
             'interests': profile.tags.order_by('name').all(),
         }
-
-
-class LoginEmailRequestView(generic_views.FormView):
-    """
-    Requests an email address for the user currently trying to login. If the
-    input is valid, continue the login process.
-    """
-
-    form_class = forms.LoginEmailRequestForm
-    template_name = 'accounts/login-email-request.html'
-
-    def form_valid(self, form):
-        data = self.request.session[getattr(settings, 'SOCIAL_AUTH_PARTIAL_PIPELINE_KEY', 'partial_pipeline')]
-        backend = data['backend']
-        user_pk = data['kwargs']['user']['pk']
-        if form.cleaned_data['email']:
-            user = get_user_model().objects.get(pk=user_pk)
-            EmailVerification.objects.create_new_verification(
-                user, form.cleaned_data['email'])
-        self.request.session['_email_passed_{0}'.format(user_pk)] = True
-        return HttpResponseRedirect('/complete/{0}/'.format(backend))
-
-
-class EmailChangeView(BaseEmailChangeView):
-    form_class = forms.ChangeEmailForm
-
-
-class ProfileChangeView(BaseProfileChangeView):
-
-    def get_context_data(self, **kwargs):
-        ctx = super(ProfileChangeView, self).get_context_data(**kwargs)
-        review_state = None
-        user = self.request.user
-        if settings.REVIEWER_APPLICATION_OPEN:
-            if not user.is_superuser:
-                try:
-                    review_state = user.reviewer_set.only('state').get().state
-                except Reviewer.DoesNotExist:
-                    pass
-        ctx.update({
-            'review_open': settings.REVIEWER_APPLICATION_OPEN,
-            'review_state': review_state,
-        })
-        return ctx
-
-    def form_invalid(self, form):
-        messages.error(self.request, _('An error occurred while saving the form.'))
-        return super(ProfileChangeView, self).form_invalid(form)
 
 
 class ReviewerApplication(LoginRequiredMixin, generic_views.FormView):

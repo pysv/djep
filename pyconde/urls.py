@@ -14,8 +14,8 @@ urlpatterns = i18n_patterns('',
         }),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^tickets/', include('pyconde.attendees.urls')),
+    url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/', include('pyconde.accounts.urls')),
-    url(r'^accounts/', include('userprofiles.urls')),
     url(r'^reviews/', include('pyconde.reviews.urls')),
     url(r'^schedule/', include('pyconde.schedule.urls')),
     url(r'^proposals/', include('pyconde.proposals.urls')),
@@ -23,10 +23,6 @@ urlpatterns = i18n_patterns('',
     url(r'^sponsorship/', include('pyconde.sponsorship.urls')),
     url(r'^checkin/', include('pyconde.checkin.urls')),
     url(r'^', include('cms.urls')),
-)
-
-urlpatterns += patterns('',
-    url(r'', include('social_auth.urls')),
 )
 
 

@@ -81,6 +81,11 @@ class Base(Configuration):
         'django.contrib.sites',
         'django.contrib.staticfiles',
         'markup_deprecated',
+
+        # django allauth for account creation and managing
+        'allauth',
+        'allauth.account',
+
         'sortedm2m',
         'crispy_forms',
         'easy_thumbnails',
@@ -223,7 +228,6 @@ class Base(Configuration):
     STATIC_URL = values.Value('/static_media/')
 
     STATICFILES_FINDERS = Configuration.STATICFILES_FINDERS + (
-        'pyconde.helpers.static.AppMediaDirectoriesFinder',
         'compressor.finders.CompressorFinder',
     )
 
@@ -351,7 +355,6 @@ class Base(Configuration):
     # proposal submission form.
     PROPOSAL_DEFAULT_LANGUAGE = 'en'
 
-
     ###########################################################################
     #
     # Review settings
@@ -384,6 +387,16 @@ class Base(Configuration):
     LOGIN_REDIRECT_URL = '/accounts/welcome/'
 
     LOGOUT_REDIRECT_URL = '/'
+
+    ###########################################################################
+    #
+    # allauth settings
+    #
+    ACCOUNT_AUTHENTICATION_METHOD = 'email'
+    ACCOUNT_EMAIL_REQUIRED = True
+    ACCOUNT_EMAIL_VERIFICATION = values.Value('mandatory')
+    ACCOUNT_EMAIL_SUBJECT_PREFIX = EMAIL_SUBJECT_PREFIX
+    ACCOUNT_SIGNUP_FORM_CLASS = 'pyconde.accounts.forms.SignUpForm'
 
     ###########################################################################
     #

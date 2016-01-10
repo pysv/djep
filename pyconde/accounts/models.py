@@ -61,6 +61,7 @@ class BadgeStatus(models.Model):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    username = models.CharField(_("Username"), max_length=256, unique=True)
     email = models.EmailField(_("E-Mail"), unique=True)
     first_name = models.CharField(_("First name"), max_length=30)
     last_name = models.CharField(_("Last name"), max_length=30)
@@ -110,7 +111,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     class Meta:
