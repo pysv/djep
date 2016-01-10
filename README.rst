@@ -11,7 +11,7 @@ First you have to clone this repository and all its submodules::
 
 Next create a virtualenv and install all the requirments into it. In this
 example we are using virtualenvwrapper to manage the virtualenv::
-    
+
     mkvirtualenv djep
 
 This repository provides requirements and configurations for various
@@ -30,17 +30,17 @@ module.
 We are using `django-configurations`_ to manage all settings and try to expose
 all relevant settings as environment variables. By default you will probably
 want to set following variables::
-    
+
     export DJANGO_CONFIGURATION=Dev
 
 If you want to use a different database system than PostgreSQL and a different
 database than "djep", set the ``DJANGO_DATABASE_URL`` environment variable.
-You can find some examples in the `dj-database-url <https://github.com/kennethreitz/dj-database-url/blob/master/test_dj_database_url.py>`_ 
+You can find some examples in the `dj-database-url <https://github.com/kennethreitz/dj-database-url/blob/master/test_dj_database_url.py>`_
 test module.
 
 Another environment variable you absolutely *have to set* is
 ``DJANGO_SECRET_KEY``::
-    
+
     export DJANGO_SECRET_KEY=...
 
 .. note::
