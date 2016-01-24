@@ -71,7 +71,8 @@ class Base(Configuration):
     INSTALLED_APPS = [
         # Skins
         # 'pyconde.skins.ep14',
-        'pyconde.skins.default',
+        # 'pyconde.skins.default',
+        'pyconde.skins.euroscipy2016',
         'djangocms_admin_style',
         'django.contrib.admin',
         'django.contrib.auth',
@@ -103,7 +104,7 @@ class Base(Configuration):
         'sekizai',
         'taggit',
         'haystack',
-        #'tinymce', # If you want tinymce, add it in the settings.py file.
+        'tinymce',  # If you want tinymce, add it in the settings.py file.
         'django_gravatar',
         'gunicorn',
         'statici18n',

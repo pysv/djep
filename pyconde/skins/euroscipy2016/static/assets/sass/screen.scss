@@ -1,0 +1,592 @@
+// Make sure the charset is set appropriately
+@charset "UTF-8";
+
+// This includes all of the foundation global elements that are needed to work with any of the other files.
+@import "settings";
+@import "normalize";
+@import "foundation/components/global";
+@import "foundation/components/grid";
+@import "foundation/components/labels";
+@import "foundation/components/top-bar";
+@import "foundation/components/orbit";
+@import "font-awesome/scss/font-awesome";
+
+//-----------------------------------------------------------------------------
+
+@import "forms";
+@import "cmsplugins";
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    text-align: center;
+}
+
+a {
+    color: $blue-light;
+}
+
+.empty {
+    text-align: center;
+}
+
+#adminbox, #reviewbox, #accountbox {
+    > a {
+        font-size: 16px;
+        font-size: 1.6rem;
+        line-height: 42px; // We want this height on every screen
+        text-decoration: none;
+        display: block;
+        font-weight: bold;
+        text-transform: uppercase;
+        position: relative;
+
+        i {
+            font-weight: bold;
+            position: absolute;
+            top: 14px;
+
+            @media #{$topbar-media-query} {
+                position: relative;
+                left: -2px;
+                top: auto;
+            }
+        }
+    }
+
+    @media #{$topbar-media-query} {
+        float: right;
+        margin-top: 70px;
+        position: relative;
+
+        > a {
+            line-height: 22px;
+            line-height: 2.2rem;
+        }
+
+        &:hover > a {
+            color: $background-nav;
+            padding-bottom: 22px;
+            background: url(../images/profile-menu-arrow.png) bottom right no-repeat;
+        }
+    }
+
+    ul {
+        padding: 0px;
+        list-style: none;
+        display: none;
+        margin: 0;
+
+        @media #{$topbar-media-query} {
+            position: absolute;
+            padding: 5px 0px;
+            top: 23px;
+            right: -25px;
+            background: $background-nav;
+            border-radius: 7px;
+            text-align: left;
+            min-width: 250px;
+            margin-top: 20px;
+            z-index: 99;
+        }
+
+        a {
+            display: block;
+            color: $blue-light;
+            @media #{$topbar-media-query} {
+                color: $background-color;
+            }
+            font-size: 1.6rem;
+            line-height: 2.0rem;
+            padding: 7px 20px;
+            text-decoration: none;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        li {
+            border-bottom: 1px dotted $background-nav;
+            &:first-child {
+                border-top: 1px dotted $background-nav;
+            }
+        }
+    }
+
+    &:hover ul,
+    ul:hover {
+        display: block;
+    }
+}
+
+#reviewbox, #accountbox {
+    @media #{$topbar-media-query} {
+        margin-right: 70px;
+    }
+}
+
+.main-nav {
+    background-color: $topbar-bg-color;
+    a {
+        text-decoration: none;
+        outline: none;
+    }
+
+    // We position the .name element centered by default on smaller devices. On larger
+    // displays this section isn't rendered at all, so we can keep it globally.
+    .title-area {
+        padding-left: 0; // Webkit defaults to a padding of 40px otherwise.
+        .name h1 a {
+            width: auto;
+        }
+        .small {
+            margin-top: 2px;
+            height: 30px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+    }
+    @media screen and (max-width: 889px) {  // mobile
+        .top-bar {
+            > .title-area {
+                h1 {
+                    padding: 3px 0 5px 0;
+                    font-size: 20px;
+                    font-size: 2rem;
+                }
+                .menu-icon a {
+                    color: $topbar-link-color;
+                    &:hover {
+                        color: $topbar-link-color-hover;
+                    }
+                }
+            }
+            > .top-bar-section {
+                display: none;
+            }
+            &.expanded > .top-bar-section {
+                display: block;
+                > ul {
+                    > li {
+                        &.menu-toggle {
+                            display: none;
+                        }
+                        > a {
+                            text-transform: uppercase;
+                        }
+                        > ul > li {
+                            a {
+                                color: $link-color-subnav;
+                            }
+                            &.active a {
+                                color: $link-color-subnav-active;
+                            }
+                            &:hover a {
+                                color: $link-color-subnav-hover;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    @media #{$topbar-media-query} {  // desktop
+        .dropdown {
+            display: none;
+        }
+        .top-bar {
+            > .title-area {
+                h1 {
+                    display: none;
+                }
+            }
+            > .top-bar-section {
+                word-wrap: break-word;
+                > ul {
+                    @include grid-row($behavior: collapse);
+                    margin-top: -($topbar-height);
+                    text-align: left;
+                    padding: 0;
+                    > li {
+                        @include grid-column($columns: 2, $collapse: true);
+                        padding-right: 5px;
+                        > a {
+                            text-transform: uppercase;
+                        }
+                        > ul {
+                            padding: 0;
+                            position: relative;
+                            a {
+                                white-space: normal;
+                            }
+                        }
+                    }
+                    > li:last-child {
+                        margin-left: -1em;
+                        width: 1em;
+                        text-align: right;
+                        > a {
+                            background: none;
+                            &.active, &:hover {
+                                color: $link-color-nav
+                            }
+                        }
+                    }
+                }
+                .has-dropdown {
+                    &.hover, &.not-click:hover {
+                        & > .dropdown {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+        .row {
+            padding-bottom: 30px;
+            padding-top: 30px;
+            .lang {
+                > span {
+                    font-size: 13px;
+                    font-size: 1.3rem;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    background-color: $link-color-nav;
+                    border-radius: 15px;
+                    padding: 4px 0 5px 0;
+                    > a {
+                        color: $background-color;
+                        padding: 4px 10px 5px 10px;
+                        border-radius: 15px;
+                        &.active {
+                            background-color: $background-color;
+                            color: $background-nav;
+                        }
+                    }
+                }
+            }
+            .socialmedia {
+                padding-right: 17px;
+                font-size: 14px;
+                font-size: 1.4rem;
+                > span {
+                    margin: 0 10px;
+                }
+            }
+            a {
+                color: $link-color-nav;
+            }
+        }
+    }
+}
+
+header {
+    background: $background-color-light;
+    .inner {
+        @media #{$topbar-media-query} {
+            height: 170px;
+        }
+        position: relative;
+        @media screen and (min-width: 890px) {
+            background: url(../images/headerbg.png) 6% 100% no-repeat;
+        }
+        .logo {
+            float: left;
+            @media screen and (max-width: 889px) {
+                .big {display: none;}
+            }
+            @media screen and (min-width: 890px) {
+                margin: 40px 30px 20px -14px;
+                .big {display: block;}
+                img {
+                    height: 110px;
+                }
+            }
+        }
+    }
+
+    #login {
+        margin: 0;
+        color: $loginColor;
+        @media (screen and min-width: 890px) {
+            position: absolute;
+            top: 44%;
+            right: 10px;
+            font-size: 16px;
+            font-size: 1.6rem;
+        }
+        @media (screen and max-width: 889px) {
+            padding: 0;
+            line-height: 42px;
+            font-size: 16px;
+            font-size: 1.6rem;
+        }
+        a {
+            text-decoration: none;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+    &:after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+}
+
+.alert-block {
+    margin-bottom: 1em;
+    li {
+        padding: 10px;
+        text-align: center;
+        margin-top: 1px;
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+    &.alert-danger {
+        background-color: $highlightColor;
+        color: #FFF;
+    }
+}
+
+header .inner {
+    width: 890px;
+    margin: auto;
+}
+
+#info, h1 {
+    font-size: 32px;
+    font-size: 3.2rem;
+    line-height: 36px;
+    line-height: 3.6rem;
+    padding: 60px 0;
+    color: $infoColor;
+    font-weight: 300;
+    text-align: center;
+}
+
+footer {
+    font-size: 14px;
+    font-size: 1.4rem;
+    line-height: 150%;
+    font-family: $footerFont;
+    text-align: left;
+    background: $dark-grey;
+    color: $background-color;
+
+    a {
+        color: $background-color;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    h2 {
+        font-size: 15px;
+        font-size: 1.5rem;
+    }
+
+    .doormat, #copyright {
+        @include grid-row();
+    }
+
+    .doormat {
+        padding-top: 30px;
+        padding-bottom: 30px;
+
+        > div {
+
+            @media #{$small-up} {
+                @include grid-column($columns: 12);
+            }
+            @media #{$medium-up} {
+                @include grid-column($columns: 4);
+            }
+        }
+    }
+
+    #footer-ack {
+        a {
+            font-weight: bold;
+        }
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        li {
+            line-height: 200%;
+        }
+    }
+
+    #copyright {
+        border-top: 1px solid $grey2;
+        padding: 19px 0;
+        color: $grey;
+        p {
+            @include grid-column($columns: 6);
+            padding-top: 0;
+            padding-bottom: 0;
+            line-height: 100%;
+            margin: 0;
+            &:last-child {
+                text-align: right;
+            }
+        }
+    }
+
+    .fa-circle {
+        opacity: 0.2;
+    }
+
+    a.btn {
+        background: #FFF;
+        color: $blue;
+    }
+}
+
+strong {
+    font-weight: bold;
+    color: $highlightColor;
+}
+
+#main {
+    padding-bottom: 100px;
+}
+
+#main > #content {
+    max-width: $row-width;
+    margin: auto;
+    text-align: left;
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 150%;
+    padding: 0 10px;
+}
+
+#site-title {
+    padding: 0;
+    margin: 50px auto;
+}
+
+table {
+    width: 100%;
+    td, th {
+        border-bottom: 1px solid $table-border;
+        padding: 5px 7px;
+    }
+    tbody {
+        tr:nth-child(odd) td {
+            background: $background-color-light;
+        }
+    }
+    .actions {
+        a {
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 2rem;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+div.actions {
+    margin-top: 30px;
+    display: block;
+}
+
+// Foundation overrides
+.orbit-container {
+    .orbit-prev, .orbit-next {
+        i {
+            font-size: 54px;
+            position: relative;
+            top: -28px;
+            color: #a8b1b5;
+            &:hover {
+                color: #FFF;
+            }
+        }
+    }
+    .orbit-prev {
+        text-indent: -19px !important;
+        > span {
+            border-right: none !important;
+        }
+    }
+    .orbit-next {
+        text-indent: -19px !important;
+        > span {
+            border-left: none !important;
+        }
+    }
+}
+
+#help {
+    font-style: italic;
+    em {
+        text-decoration: underline;
+    }
+    margin-bottom: 20px;
+    opacity: 0.8;
+}
+
+body.with-sidebar {
+    #details {
+        @media #{$medium-up} {
+            @include grid-column($columns:9);
+            padding-right: 20px;
+        }
+    }
+    #sidebar {
+        font-size: 80%;
+        opacity: 0.8;
+        @media #{$medium-up} {
+            @include grid-column($columns:3);
+        }
+    }
+}
+
+@import "frontpage";
+@import "userprofile";
+@import "account";
+@import "proposals";
+@import "checkout";
+@import "alerts";
+@import "reviews";
+@import "schedule";
+@import "sponsorship";
+@import "checkin";
+
+//-----------------------------------------------------------------------------
+
+@media (screen and max-width: 1000px) {
+    header .inner, section, footer, #info {
+        width: 100%;
+    }
+}
+
+@media (screen and max-width: 890px) {
+    #main {
+        width: 100%;
+    }
+}
+
+@media (screen and max-width: 782px) {
+    #get-notified {
+        width: 100%;
+    }
+}
+
+@media (screen and max-width: 400px) {
+    html {
+        font-size: 50%;
+    }
+}

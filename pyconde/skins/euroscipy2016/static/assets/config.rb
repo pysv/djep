@@ -1,0 +1,7 @@
+add_import_path "bower_components/foundation/scss"
+add_import_path "bower_components"
+http_path = "/"
+css_dir = "css"
+sass_dir = "sass"
+images_dir = "images"
+javascripts_dir = "js"

@@ -1,0 +1,33 @@
+@import "theme";
+
+// default content width
+$row-width: 890px;
+// default radius
+$global-radius: 5px;
+
+$body-font-family: $baseFont;
+$body-font-color: $baseColor;
+
+$header-font-family: $baseFont;
+
+$topbar-height: auto;
+
+$topbar-bg-color: $background-nav;
+$topbar-dropdown-bg: none;
+$topbar-dropdown-link-color: $link-color-subnav;
+$topbar-dropdown-link-bg: none;
+$topbar-dropdown-toggle-color: $link-color-subnav;
+
+$topbar-link-color: $link-color-nav;
+$topbar-link-color-hover: $link-color-nav-hover;
+$topbar-link-color-active: $link-color-nav-active;
+$topbar-link-font-size: 14px;
+$topbar-link-bg-hover: none;
+$topbar-link-bg-active: none;
+$topbar-link-bg-active-hover: none;
+
+$topbar-breakpoint: rem-calc(890px);
+$topbar-media-query: "screen and (min-width: 890px)";
+$topbar-arrows: false;
+
+$fa-font-path: "/static_media/assets/bower_components/font-awesome/fonts/";
