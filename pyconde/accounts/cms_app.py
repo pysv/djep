@@ -3,7 +3,7 @@ from cms.apphook_pool import apphook_pool
 
 from django.utils.translation import ugettext_lazy as _
 
-from .menu import AccountsMenu
+# from .menu import AccountsMenu
 
 
 class AccountsApp(CMSApp):
@@ -12,6 +12,6 @@ class AccountsApp(CMSApp):
     """
     name = _("Accounts app")
     urls = ["pyconde.accounts.urls"]
-    menus = [AccountsMenu]
+    # menus = [AccountsMenu]
 
 apphook_pool.register(AccountsApp)
