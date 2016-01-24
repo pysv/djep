@@ -2,8 +2,6 @@ from haystack.indexes import SearchIndex, CharField, Indexable
 from django.db import connection
 import haystack
 
-from pyconde.accounts.models import Profile
-
 from . import models
 
 
@@ -18,16 +16,8 @@ class SpeakerIndex(SearchIndex, Indexable):
 
     def prepare(self, obj):
         data = super(SpeakerIndex, self).prepare(obj)
-
-        short_info = ""
-        try:
-            profile = Profile.objects.get(user=obj.user)
-            short_info = profile.short_info
-        except:
-            pass
-
         data['title'] = unicode(obj)
-        data['text'] = data['title'] + short_info
+        data['text'] = data['title'] + obj.user.short_info
         data['url'] = obj.get_absolute_url()
         return data
 

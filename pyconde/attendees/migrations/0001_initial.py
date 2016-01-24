@@ -1,153 +1,222 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        
-        # Adding model 'Voucher'
-        db.create_table('attendees_voucher', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('code', self.gf('django.db.models.fields.CharField')(max_length=12, blank=True)),
-            ('remarks', self.gf('django.db.models.fields.CharField')(max_length=254, blank=True)),
-            ('date_valid', self.gf('django.db.models.fields.DateTimeField')()),
-            ('is_used', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('attendees', ['Voucher'])
-
-        # Adding model 'TicketType'
-        db.create_table('attendees_tickettype', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('product_number', self.gf('django.db.models.fields.IntegerField')(unique=True, blank=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('fee', self.gf('django.db.models.fields.FloatField')(default=0)),
-            ('max_purchases', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('is_active', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('date_valid_from', self.gf('django.db.models.fields.DateTimeField')()),
-            ('date_valid_to', self.gf('django.db.models.fields.DateTimeField')()),
-            ('voucher_needed', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('tutorial_ticket', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('remarks', self.gf('django.db.models.fields.CharField')(max_length=254, blank=True)),
-        ))
-        db.send_create_signal('attendees', ['TicketType'])
-
-        # Adding model 'Customer'
-        db.create_table('attendees_customer', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('customer_number', self.gf('django.db.models.fields.IntegerField')(unique=True)),
-            ('email', self.gf('django.db.models.fields.EmailField')(max_length=250)),
-            ('date_added', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('is_exported', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('attendees', ['Customer'])
-
-        # Adding model 'Purchase'
-        db.create_table('attendees_purchase', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('customer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['attendees.Customer'])),
-            ('company_name', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=250)),
-            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=250)),
-            ('street', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('zip_code', self.gf('django.db.models.fields.CharField')(max_length=5)),
-            ('city', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('country', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('vat_id', self.gf('django.db.models.fields.CharField')(max_length=16, blank=True)),
-            ('state', self.gf('django.db.models.fields.CharField')(default='new', max_length=25)),
-            ('comments', self.gf('django.db.models.fields.TextField')(blank=True)),
-        ))
-        db.send_create_signal('attendees', ['Purchase'])
-
-        # Adding model 'Ticket'
-        db.create_table('attendees_ticket', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('purchase', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['attendees.Purchase'])),
-            ('ticket_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['attendees.TicketType'])),
-            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=250)),
-            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=250)),
-            ('date_added', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('voucher', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['attendees.Voucher'], null=True, blank=True)),
-        ))
-        db.send_create_signal('attendees', ['Ticket'])
+from django.db import migrations, models
+import django.db.models.deletion
+import django.utils.timezone
+from django.conf import settings
+import pyconde.attendees.validators
 
 
-    def backwards(self, orm):
-        
-        # Deleting model 'Voucher'
-        db.delete_table('attendees_voucher')
+class Migration(migrations.Migration):
 
-        # Deleting model 'TicketType'
-        db.delete_table('attendees_tickettype')
+    dependencies = [
+        ('contenttypes', '0002_remove_content_type_name'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('sponsorship', '__first__'),
+        ('conference', '__first__'),
+    ]
 
-        # Deleting model 'Customer'
-        db.delete_table('attendees_customer')
-
-        # Deleting model 'Purchase'
-        db.delete_table('attendees_purchase')
-
-        # Deleting model 'Ticket'
-        db.delete_table('attendees_ticket')
-
-
-    models = {
-        'attendees.customer': {
-            'Meta': {'ordering': "('customer_number',)", 'object_name': 'Customer'},
-            'customer_number': ('django.db.models.fields.IntegerField', [], {'unique': 'True'}),
-            'date_added': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '250'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_exported': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
-        },
-        'attendees.purchase': {
-            'Meta': {'object_name': 'Purchase'},
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'comments': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'company_name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'country': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'customer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['attendees.Customer']"}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
-            'state': ('django.db.models.fields.CharField', [], {'default': "'new'", 'max_length': '25'}),
-            'street': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'vat_id': ('django.db.models.fields.CharField', [], {'max_length': '16', 'blank': 'True'}),
-            'zip_code': ('django.db.models.fields.CharField', [], {'max_length': '5'})
-        },
-        'attendees.ticket': {
-            'Meta': {'object_name': 'Ticket'},
-            'date_added': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
-            'purchase': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['attendees.Purchase']"}),
-            'ticket_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['attendees.TicketType']"}),
-            'voucher': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['attendees.Voucher']", 'null': 'True', 'blank': 'True'})
-        },
-        'attendees.tickettype': {
-            'Meta': {'ordering': "('product_number', 'voucher_needed')", 'object_name': 'TicketType'},
-            'date_valid_from': ('django.db.models.fields.DateTimeField', [], {}),
-            'date_valid_to': ('django.db.models.fields.DateTimeField', [], {}),
-            'fee': ('django.db.models.fields.FloatField', [], {'default': '0'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'max_purchases': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'product_number': ('django.db.models.fields.IntegerField', [], {'unique': 'True', 'blank': 'True'}),
-            'remarks': ('django.db.models.fields.CharField', [], {'max_length': '254', 'blank': 'True'}),
-            'tutorial_ticket': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'voucher_needed': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
-        },
-        'attendees.voucher': {
-            'Meta': {'object_name': 'Voucher'},
-            'code': ('django.db.models.fields.CharField', [], {'max_length': '12', 'blank': 'True'}),
-            'date_valid': ('django.db.models.fields.DateTimeField', [], {}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_used': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'remarks': ('django.db.models.fields.CharField', [], {'max_length': '254', 'blank': 'True'})
-        }
-    }
-
-    complete_apps = ['attendees']
+    operations = [
+        migrations.CreateModel(
+            name='DietaryPreference',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=30, verbose_name='Name')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Purchase',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('company_name', models.CharField(max_length=100, verbose_name='Company', blank=True)),
+                ('first_name', models.CharField(max_length=250, verbose_name='First name')),
+                ('last_name', models.CharField(max_length=250, verbose_name='Last name')),
+                ('email', models.EmailField(max_length=254, verbose_name='E-mail')),
+                ('street', models.CharField(max_length=100, verbose_name='Street and house number')),
+                ('zip_code', models.CharField(max_length=20, verbose_name='Zip code')),
+                ('city', models.CharField(max_length=100, verbose_name='City')),
+                ('country', models.CharField(max_length=100, verbose_name='Country')),
+                ('vat_id', models.CharField(max_length=16, verbose_name='VAT-ID', blank=True)),
+                ('date_added', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Date (added)')),
+                ('state', models.CharField(default='incomplete', max_length=25, verbose_name='Status', choices=[('incomplete', 'Purchase incomplete'), ('new', 'new'), ('invoice_created', 'invoice created'), ('payment_received', 'payment received'), ('canceled', 'canceled')])),
+                ('comments', models.TextField(verbose_name='Comments', blank=True)),
+                ('payment_method', models.CharField(default='invoice', max_length=20, verbose_name='Payment method', choices=[('invoice', 'Invoice'), ('creditcard', 'Credit card'), ('elv', 'ELV')])),
+                ('payment_transaction', models.CharField(max_length=255, verbose_name='Transaction ID', blank=True)),
+                ('payment_total', models.FloatField(null=True, verbose_name='Payment total', blank=True)),
+                ('exported', models.BooleanField(default=False, verbose_name='Exported')),
+                ('invoice_number', models.IntegerField(null=True, verbose_name='Invoice number', blank=True)),
+                ('invoice_filename', models.CharField(max_length=255, null=True, verbose_name='Invoice filename', blank=True)),
+                ('conference', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='conference', to='conference.Conference', null=True)),
+                ('user', models.ForeignKey(verbose_name='User', to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'verbose_name': 'Purchase',
+                'verbose_name_plural': 'Purchases',
+            },
+        ),
+        migrations.CreateModel(
+            name='Ticket',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('date_added', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Date (added)')),
+                ('canceled', models.BooleanField(default=False, verbose_name='Canceled')),
+            ],
+            options={
+                'ordering': ('ticket_type__tutorial_ticket', 'ticket_type__product_number'),
+            },
+        ),
+        migrations.CreateModel(
+            name='TicketType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('product_number', models.IntegerField(help_text='Will be created when you save the first time.', verbose_name='Product number', blank=True)),
+                ('name', models.CharField(max_length=50, verbose_name='Name')),
+                ('fee', models.FloatField(default=0, verbose_name='Fee')),
+                ('max_purchases', models.PositiveIntegerField(default=0, help_text='0 means no limit', verbose_name='Max. purchases')),
+                ('is_active', models.BooleanField(default=False, verbose_name='Is active')),
+                ('is_on_desk_active', models.BooleanField(default=False, verbose_name='Allow on desk purchase')),
+                ('date_valid_from', models.DateTimeField(verbose_name='Sale start')),
+                ('date_valid_to', models.DateTimeField(verbose_name='Sale end')),
+                ('valid_on', models.DateField(blank=True, null=True, verbose_name='Valid on', validators=[pyconde.attendees.validators.during_conference])),
+                ('tutorial_ticket', models.BooleanField(default=False, verbose_name='Tutorial ticket')),
+                ('remarks', models.TextField(verbose_name='Remarks', blank=True)),
+                ('allow_editing', models.NullBooleanField(verbose_name='Allow editing')),
+                ('editable_fields', models.TextField(verbose_name='Editable fields', blank=True)),
+                ('editable_until', models.DateTimeField(null=True, verbose_name='Editable until', blank=True)),
+                ('prevent_invoice', models.BooleanField(default=False, help_text='If checked, a purchase, that contains only tickets of ticket types where this is checked, will not be send to the user. This can be useful for e.g. sponsor tickets', verbose_name='Conditionally prevent invoice to user')),
+                ('conference', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='conference', to='conference.Conference', null=True)),
+                ('content_type', models.ForeignKey(verbose_name='Ticket to generate', to='contenttypes.ContentType')),
+            ],
+            options={
+                'ordering': ('tutorial_ticket', 'product_number', 'vouchertype_needed'),
+                'verbose_name': 'Ticket type',
+                'verbose_name_plural': 'Ticket type',
+            },
+        ),
+        migrations.CreateModel(
+            name='TShirtSize',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('size', models.CharField(max_length=100, verbose_name='Size')),
+                ('sort', models.IntegerField(default=999, verbose_name='Sort order')),
+                ('conference', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='conference', to='conference.Conference', null=True)),
+            ],
+            options={
+                'ordering': ('sort',),
+                'verbose_name': 'T-Shirt size',
+                'verbose_name_plural': 'T-Shirt sizes',
+            },
+        ),
+        migrations.CreateModel(
+            name='Voucher',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('code', models.CharField(help_text='Can be left blank, code will be created when you save.', max_length=12, verbose_name='Code', blank=True)),
+                ('remarks', models.CharField(max_length=254, verbose_name='Remarks', blank=True)),
+                ('date_valid', models.DateTimeField(help_text='The voucher is valid until this date', verbose_name='Date (valid)')),
+                ('is_used', models.BooleanField(default=False, verbose_name='Is used')),
+            ],
+            options={
+                'verbose_name': 'Voucher',
+                'verbose_name_plural': 'Vouchers',
+            },
+        ),
+        migrations.CreateModel(
+            name='VoucherType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=50, verbose_name='voucher type')),
+                ('conference', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='conference', to='conference.Conference', null=True)),
+            ],
+            options={
+                'verbose_name': 'voucher type',
+                'verbose_name_plural': 'voucher types',
+            },
+        ),
+        migrations.CreateModel(
+            name='SIMCardTicket',
+            fields=[
+                ('ticket_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='attendees.Ticket')),
+                ('first_name', models.CharField(max_length=250, verbose_name='First name')),
+                ('last_name', models.CharField(max_length=250, verbose_name='Last name')),
+                ('date_of_birth', models.DateField(verbose_name='Date of birth')),
+                ('gender', models.CharField(max_length=6, verbose_name='Gender', choices=[('female', 'female'), ('male', 'male')])),
+                ('hotel_name', models.CharField(help_text='Name of your hotel or host for your stay.', max_length=100, verbose_name='Host', blank=True)),
+                ('email', models.EmailField(max_length=254, verbose_name='E-mail')),
+                ('street', models.CharField(max_length=100, verbose_name='Street and house number of host')),
+                ('zip_code', models.CharField(max_length=20, verbose_name='Zip code of host')),
+                ('city', models.CharField(max_length=100, verbose_name='City of host')),
+                ('country', models.CharField(max_length=100, verbose_name='Country of host')),
+                ('phone', models.CharField(help_text='Please supply the phone number of your hotel or host.', max_length=100, verbose_name='Host phone number')),
+                ('sim_id', models.CharField(help_text='The IMSI of the SIM Card associated with this account.', max_length=20, verbose_name='IMSI', blank=True)),
+            ],
+            options={
+                'verbose_name': 'SIM Card',
+                'verbose_name_plural': 'SIM Cards',
+            },
+            bases=('attendees.ticket',),
+        ),
+        migrations.CreateModel(
+            name='SupportTicket',
+            fields=[
+                ('ticket_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='attendees.Ticket')),
+            ],
+            options={
+                'verbose_name': 'Support Ticket',
+                'verbose_name_plural': 'Support Tickets',
+            },
+            bases=('attendees.ticket',),
+        ),
+        migrations.CreateModel(
+            name='VenueTicket',
+            fields=[
+                ('ticket_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='attendees.Ticket')),
+                ('first_name', models.CharField(max_length=250, verbose_name='First name', blank=True)),
+                ('last_name', models.CharField(max_length=250, verbose_name='Last name', blank=True)),
+                ('organisation', models.CharField(max_length=100, verbose_name='Organization', blank=True)),
+                ('dietary_preferences', models.ManyToManyField(to='attendees.DietaryPreference', verbose_name='Dietary preferences', blank=True)),
+                ('shirtsize', models.ForeignKey(verbose_name='Desired T-Shirt size', blank=True, to='attendees.TShirtSize', null=True)),
+                ('sponsor', models.ForeignKey(verbose_name='Sponsor', blank=True, to='sponsorship.Sponsor', null=True)),
+            ],
+            options={
+                'verbose_name': 'Conference Ticket',
+                'verbose_name_plural': 'Conference Tickets',
+            },
+            bases=('attendees.ticket',),
+        ),
+        migrations.AddField(
+            model_name='voucher',
+            name='type',
+            field=models.ForeignKey(verbose_name='voucher type', to='attendees.VoucherType', null=True),
+        ),
+        migrations.AddField(
+            model_name='tickettype',
+            name='vouchertype_needed',
+            field=models.ForeignKey(verbose_name='voucher type needed', blank=True, to='attendees.VoucherType', null=True),
+        ),
+        migrations.AddField(
+            model_name='ticket',
+            name='purchase',
+            field=models.ForeignKey(to='attendees.Purchase'),
+        ),
+        migrations.AddField(
+            model_name='ticket',
+            name='ticket_type',
+            field=models.ForeignKey(verbose_name='Ticket type', to='attendees.TicketType'),
+        ),
+        migrations.AddField(
+            model_name='ticket',
+            name='user',
+            field=models.ForeignKey(related_name='attendees_ticket_tickets', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+        ),
+        migrations.AddField(
+            model_name='venueticket',
+            name='voucher',
+            field=models.ForeignKey(verbose_name='Voucher', blank=True, to='attendees.Voucher', null=True),
+        ),
+        migrations.AlterUniqueTogether(
+            name='tickettype',
+            unique_together=set([('product_number', 'conference')]),
+        ),
+    ]

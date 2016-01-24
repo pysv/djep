@@ -2,7 +2,7 @@ import tablib
 import logging
 import re
 
-from django.contrib.auth import models as auth_models
+from django.contrib.auth import get_user_model, models as auth_models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.cache import cache
@@ -33,7 +33,7 @@ def can_review_proposal(user, proposal=None, reset_cache=False):
         return False
     if reset_cache or reviewer_pks is None:
         perm = get_review_permission()
-        reviewer_pks = set(u['pk'] for u in auth_models.User.objects.filter(Q(is_superuser=True) | Q(user_permissions=perm) | Q(groups__permissions=perm)).values('pk'))
+        reviewer_pks = set(u['pk'] for u in get_user_model().objects.filter(Q(is_superuser=True) | Q(user_permissions=perm) | Q(groups__permissions=perm)).values('pk'))
         cache.set(cache_key, reviewer_pks)
         logger.debug("reviewer_pks cache has been rebuilt")
     return user.pk in reviewer_pks

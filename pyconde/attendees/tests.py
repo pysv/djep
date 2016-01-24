@@ -7,7 +7,7 @@ import mock
 from decimal import Decimal
 from os import path, unlink
 
-from django.contrib.auth import models as auth_models
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -62,7 +62,7 @@ class ViewTests(TestCase):
 class PurchaseViewTests(TestCase):
 
     def setUp(self):
-        self.user = auth_models.User.objects.create_user(
+        self.user = get_user_model().objects.create_user(
             'user', 'user@user.com', 'user')
         self.user.first_name = 'Firstname'
         self.user.last_name = 'Lastname'
@@ -174,7 +174,7 @@ class TicketQuantityFormTests(TestCase):
 class TicketVoucherFormTests(TestCase):
     def setUp(self):
         now = datetime.datetime.now()
-        self.user = auth_models.User.objects.create_user('test_user', 'test@test.com', 'test_password')
+        self.user = get_user_model().objects.create_user('test_user', 'test@test.com', 'test_password')
         self.voucher_type = models.VoucherType(name='type1')
         self.voucher_type.save()
         self.voucher_type2 = models.VoucherType(name='type2')
@@ -226,9 +226,9 @@ class TicketVoucherFormTests(TestCase):
 
 class TicketAssignmentFormTests(TestCase):
     def setUp(self):
-        self.user1 = auth_models.User.objects.create_user(
+        self.user1 = get_user_model().objects.create_user(
             'test_user1', 'test1@test.com', 'test_password')
-        self.user2 = auth_models.User.objects.create_user(
+        self.user2 = get_user_model().objects.create_user(
             'test_user2', 'test2@test.com', 'test_password')
 
     def tearDown(self):
@@ -283,7 +283,7 @@ class PurchaseProcessTest(TestCase):
         self.ct_simcardticket = ctype(models.SIMCardTicket)
         self.ct_supportticket = ctype(models.SupportTicket)
 
-        self.user = auth_models.User.objects.create_user(username='user',
+        self.user = get_user_model().objects.create_user(username='user',
             email='user@user.com', password='user')
         self.client.login(username='user', password='user')
 
@@ -709,75 +709,65 @@ class TestPurchaseModel(TestCase):
 
     def test_send_invoice_to_user_invoice_incl_excl(self):
         purchase = models.Purchase.objects.create(
-            payment_method='invoice', payment_total=300,
-                **self.purchase_data)
+            payment_method='invoice', payment_total=300, **self.purchase_data)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.included)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.excluded)
         self.assertTrue(purchase.send_invoice_to_user)
 
     def test_send_invoice_to_user_invoice_incl_exclfree(self):
         purchase = models.Purchase.objects.create(
-            payment_method='invoice', payment_total=100,
-                **self.purchase_data)
+            payment_method='invoice', payment_total=100, **self.purchase_data)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.included)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.excluded_free)
         self.assertTrue(purchase.send_invoice_to_user)
 
     def test_send_invoice_to_user_invoice_inclfree_excl(self):
         purchase = models.Purchase.objects.create(
-            payment_method='invoice', payment_total=200,
-                **self.purchase_data)
+            payment_method='invoice', payment_total=200, **self.purchase_data)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.included_free)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.excluded)
         self.assertTrue(purchase.send_invoice_to_user)
 
     def test_send_invoice_to_user_invoice_inclfree_exclfree(self):
         purchase = models.Purchase.objects.create(
-            payment_method='invoice', payment_total=0,
-                **self.purchase_data)
+            payment_method='invoice', payment_total=0, **self.purchase_data)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.included_free)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.excluded_free)
         self.assertTrue(purchase.send_invoice_to_user)
 
     def test_send_invoice_to_user_invoice_incl(self):
         purchase = models.Purchase.objects.create(
-            payment_method='invoice', payment_total=100,
-                **self.purchase_data)
+            payment_method='invoice', payment_total=100, **self.purchase_data)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.included)
         self.assertTrue(purchase.send_invoice_to_user)
 
     def test_send_invoice_to_user_invoice_inclfree(self):
         purchase = models.Purchase.objects.create(
-            payment_method='invoice', payment_total=0,
-                **self.purchase_data)
+            payment_method='invoice', payment_total=0, **self.purchase_data)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.included_free)
         self.assertTrue(purchase.send_invoice_to_user)
 
     def test_send_invoice_to_user_invoice_excl(self):
         purchase = models.Purchase.objects.create(
-            payment_method='invoice', payment_total=200,
-                **self.purchase_data)
+            payment_method='invoice', payment_total=200, **self.purchase_data)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.excluded)
         self.assertTrue(purchase.send_invoice_to_user)
 
     def test_send_invoice_to_user_invoice_exclfree(self):
         purchase = models.Purchase.objects.create(
-            payment_method='invoice', payment_total=0,
-                **self.purchase_data)
+            payment_method='invoice', payment_total=0, **self.purchase_data)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.excluded_free)
         self.assertFalse(purchase.send_invoice_to_user)
 
     def test_send_invoice_to_user_creditcard_excl(self):
         purchase = models.Purchase.objects.create(
-            payment_method='creditcard', payment_total=200,
-                **self.purchase_data)
+            payment_method='creditcard', payment_total=200, **self.purchase_data)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.excluded)
         self.assertTrue(purchase.send_invoice_to_user)
 
     def test_send_invoice_to_user_creditcard_exclfree(self):
         purchase = models.Purchase.objects.create(
-            payment_method='creditcard', payment_total=0,
-                **self.purchase_data)
+            payment_method='creditcard', payment_total=0, **self.purchase_data)
         models.VenueTicket.objects.create(purchase=purchase, ticket_type=self.excluded_free)
         self.assertTrue(purchase.send_invoice_to_user)
 
@@ -903,7 +893,7 @@ class TestTicketTypeModel(TestCase):
 
 class TestTicketModel(TestCase):
     def test_ticket_editable_if_enabled_on_tickettype(self):
-        user = auth_models.User()
+        user = get_user_model()()
         conference = Conference(tickets_editable=True)
         ticket_type = models.TicketType(allow_editing=True,
                                         conference=conference)
@@ -911,7 +901,7 @@ class TestTicketModel(TestCase):
         self.assertTrue(ticket.can_be_edited_by(user))
 
     def test_ticket_editable_if_enabled_on_conference(self):
-        user = auth_models.User()
+        user = get_user_model()()
         conference = Conference(tickets_editable=True)
         ticket_type = models.TicketType(allow_editing=None,
                                         conference=conference)
@@ -919,7 +909,7 @@ class TestTicketModel(TestCase):
         self.assertTrue(ticket.can_be_edited_by(user))
 
     def test_ticket_editable_if_enabled_on_ticket_and_disabled_on_conference(self):
-        user = auth_models.User()
+        user = get_user_model()()
         conference = Conference(tickets_editable=False)
         ticket_type = models.TicketType(allow_editing=True,
                                         conference=conference)
@@ -927,7 +917,7 @@ class TestTicketModel(TestCase):
         self.assertTrue(ticket.can_be_edited_by(user))
 
     def test_ticket_not_editable_if_disabled_on_ticket(self):
-        user = auth_models.User()
+        user = get_user_model()()
         conference = Conference(tickets_editable=True)
         ticket_type = models.TicketType(allow_editing=False,
                                         conference=conference)
@@ -935,7 +925,7 @@ class TestTicketModel(TestCase):
         self.assertFalse(ticket.can_be_edited_by(user))
 
     def test_ticket_not_editable_if_disabled_on_conference(self):
-        user = auth_models.User()
+        user = get_user_model()()
         conference = Conference(tickets_editable=False)
         ticket_type = models.TicketType(allow_editing=None,
                                         conference=conference)
@@ -943,7 +933,7 @@ class TestTicketModel(TestCase):
         self.assertFalse(ticket.can_be_edited_by(user))
 
     def test_ticket_not_editable_if_time_over_on_tickettype(self):
-        user = auth_models.User()
+        user = get_user_model()()
         now = datetime.datetime.now()
         conference = Conference(tickets_editable=True)
         ticket_type = models.TicketType(allow_editing=True,
@@ -953,7 +943,7 @@ class TestTicketModel(TestCase):
         self.assertFalse(ticket.can_be_edited_by(user, current_time=now))
 
     def test_ticket_not_editable_if_time_over_on_conference(self):
-        user = auth_models.User()
+        user = get_user_model()()
         now = datetime.datetime.now()
         conference = Conference(tickets_editable=True,
                                 tickets_editable_until=now + datetime.timedelta(days=-1))

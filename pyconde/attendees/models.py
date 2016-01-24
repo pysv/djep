@@ -7,9 +7,9 @@ import string
 
 from email.utils import formataddr
 
-from django.contrib.auth.models import User
 from django.contrib.contenttypes import models as content_models
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.conf import settings as django_settings
 from django.db import models
 from django.db.models import Q
 from django.utils.encoding import force_text
@@ -242,7 +242,8 @@ class Purchase(models.Model):
     conference = models.ForeignKey(
         "conference.Conference", verbose_name="conference", null=True,
         on_delete=models.PROTECT)
-    user = models.ForeignKey(User, null=True, verbose_name=_('User'))
+    user = models.ForeignKey(django_settings.AUTH_USER_MODEL, null=True,
+        verbose_name=_('User'))
 
     # Address in purchase because a user maybe wants to different invoices.
     company_name = models.CharField(_('Company'), max_length=100, blank=True)
@@ -386,9 +387,8 @@ class TicketManager(models.Manager):
 class Ticket(models.Model):
     purchase = models.ForeignKey(Purchase)
     ticket_type = models.ForeignKey(TicketType, verbose_name=_('Ticket type'))
-    user = models.ForeignKey(
-        User, null=True, blank=True,
-        related_name='%(app_label)s_%(class)s_tickets')
+    user = models.ForeignKey(django_settings.AUTH_USER_MODEL, null=True,
+        blank=True, related_name='%(app_label)s_%(class)s_tickets')
 
     date_added = models.DateTimeField(
         _('Date (added)'), blank=False, default=now)
@@ -488,7 +488,7 @@ class VenueTicket(Ticket):
     shirtsize = models.ForeignKey(TShirtSize, blank=True, null=True,
                                   verbose_name=_('Desired T-Shirt size'))
     dietary_preferences = models.ManyToManyField('DietaryPreference',
-        verbose_name=_('Dietary preferences'), null=True, blank=True)
+        verbose_name=_('Dietary preferences'), blank=True)
 
     sponsor = models.ForeignKey('sponsorship.Sponsor', null=True, blank=True,
         verbose_name=_('Sponsor'))

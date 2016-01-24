@@ -4,8 +4,7 @@ from django.core import mail
 from django.template.loader import render_to_string
 from django.contrib.sites.models import Site
 
-from pyconde.sponsorship.models import JobOffer
-from pyconde.accounts.models import Profile
+from pyconde.accounts.models import User
 
 from pyconde.celery import app
 
@@ -13,7 +12,7 @@ from pyconde.celery import app
 @app.task(ignore_result=True)
 def send_job_offer(cleaned_data):
     cd = cleaned_data
-    profiles = Profile.objects.filter(accept_job_offers=True).select_related('user')
+    user = User.objects.filter(accept_job_offers=True)
     body = render_to_string('sponsorship/emails/job_offer.txt', {
         'sponsor_name': cd['sponsor'].name,
         'text': cd['text'],
@@ -26,7 +25,7 @@ def send_job_offer(cleaned_data):
     with closing(mail.get_connection()) as connection:
         offset = 0
         while True:
-            chunk = profiles[offset:offset+50]
+            chunk = user[offset:offset+50]
             offset += 50
             if not chunk:
                 break

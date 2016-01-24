@@ -4,7 +4,7 @@ from datetime import timedelta
 
 from django.test import TestCase
 from django.forms.models import model_to_dict
-from django.contrib.auth import models as auth_models
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
 from pyconde.conference.test_utils import ConferenceTestingMixin
@@ -20,7 +20,7 @@ from . import utils
 class SubmissionTests(ConferenceTestingMixin, TestCase):
     def setUp(self):
         self.create_test_conference()
-        self.user = auth_models.User.objects.create_user(
+        self.user = get_user_model().objects.create_user(
             'test', 'test@test.com',
             'testpassword')
         speakers_models.Speaker.objects.all().delete()
@@ -111,7 +111,7 @@ class ListUserProposalsViewTests(ConferenceTestingMixin, TestCase):
         self.create_test_conference('')
         self.create_test_conference('other_')
 
-        self.user = auth_models.User.objects.create_user(
+        self.user = get_user_model().objects.create_user(
             'test', 'test@test.com',
             'testpassword'
         )

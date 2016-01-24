@@ -1,199 +1,96 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        
-        # Adding model 'Session'
-        db.create_table('schedule_session', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('conference', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.Conference'])),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('description', self.gf('django.db.models.fields.TextField')(max_length=400)),
-            ('abstract', self.gf('django.db.models.fields.TextField')()),
-            ('speaker', self.gf('django.db.models.fields.related.ForeignKey')(related_name='sessions', to=orm['speakers.Speaker'])),
-            ('submission_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.utcnow)),
-            ('modified_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('kind', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.SessionKind'])),
-            ('audience_level', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.AudienceLevel'])),
-            ('duration', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.SessionDuration'])),
-            ('track', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.Track'], null=True, blank=True)),
-            ('start', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('end', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('proposal', self.gf('django.db.models.fields.related.ForeignKey')(related_name='session', to=orm['proposals.Proposal'])),
-            ('location', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.Location'], null=True, blank=True)),
-        ))
-        db.send_create_signal('schedule', ['Session'])
-
-        # Adding M2M table for field additional_speakers on 'Session'
-        db.create_table('schedule_session_additional_speakers', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('session', models.ForeignKey(orm['schedule.session'], null=False)),
-            ('speaker', models.ForeignKey(orm['speakers.speaker'], null=False))
-        ))
-        db.create_unique('schedule_session_additional_speakers', ['session_id', 'speaker_id'])
+from django.db import migrations, models
+import pyconde.schedule.models
+import django.utils.timezone
+import sortedm2m.fields
+import django.db.models.deletion
+import pyconde.tagging
 
 
-    def backwards(self, orm):
-        
-        # Deleting model 'Session'
-        db.delete_table('schedule_session')
+class Migration(migrations.Migration):
 
-        # Removing M2M table for field additional_speakers on 'Session'
-        db.delete_table('schedule_session_additional_speakers')
+    dependencies = [
+        ('speakers', '__first__'),
+        ('cms', '0013_urlconfrevision'),
+        ('conference', '__first__'),
+        ('lightningtalks', '__first__'),
+        ('taggit', '0002_auto_20150616_2121'),
+        ('proposals', '__first__'),
+    ]
 
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'conference.audiencelevel': {
-            'Meta': {'object_name': 'AudienceLevel'},
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'level': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'})
-        },
-        'conference.conference': {
-            'Meta': {'object_name': 'Conference'},
-            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'reviews_active': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
-            'reviews_end_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'reviews_start_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'start_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'timezone': ('timezones.fields.TimeZoneField', [], {'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'conference.location': {
-            'Meta': {'ordering': "['order']", 'object_name': 'Location'},
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
-            'used_for_sessions': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
-        },
-        'conference.sessionduration': {
-            'Meta': {'object_name': 'SessionDuration'},
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'minutes': ('django.db.models.fields.IntegerField', [], {}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'})
-        },
-        'conference.sessionkind': {
-            'Meta': {'object_name': 'SessionKind'},
-            'closed': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'end_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
-            'start_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
-        },
-        'conference.track': {
-            'Meta': {'ordering': "['order']", 'object_name': 'Track'},
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
-            'visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'proposals.proposal': {
-            'Meta': {'object_name': 'Proposal'},
-            'abstract': ('django.db.models.fields.TextField', [], {}),
-            'additional_speakers': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'proposal_participations'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['speakers.Speaker']"}),
-            'audience_level': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.AudienceLevel']"}),
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'description': ('django.db.models.fields.TextField', [], {'max_length': '400'}),
-            'duration': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.SessionDuration']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'kind': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.SessionKind']"}),
-            'modified_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'speaker': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'proposals'", 'to': "orm['speakers.Speaker']"}),
-            'submission_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.utcnow'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'track': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Track']", 'null': 'True', 'blank': 'True'})
-        },
-        'schedule.session': {
-            'Meta': {'object_name': 'Session'},
-            'abstract': ('django.db.models.fields.TextField', [], {}),
-            'additional_speakers': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'session_participations'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['speakers.Speaker']"}),
-            'audience_level': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.AudienceLevel']"}),
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'description': ('django.db.models.fields.TextField', [], {'max_length': '400'}),
-            'duration': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.SessionDuration']"}),
-            'end': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'kind': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.SessionKind']"}),
-            'location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Location']", 'null': 'True', 'blank': 'True'}),
-            'modified_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'proposal': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'session'", 'to': "orm['proposals.Proposal']"}),
-            'speaker': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sessions'", 'to': "orm['speakers.Speaker']"}),
-            'start': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'submission_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.utcnow'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'track': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Track']", 'null': 'True', 'blank': 'True'})
-        },
-        'speakers.speaker': {
-            'Meta': {'object_name': 'Speaker'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'speaker_profile'", 'unique': 'True', 'to': "orm['auth.User']"})
-        },
-        'taggit.tag': {
-            'Meta': {'object_name': 'Tag'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100', 'db_index': 'True'})
-        },
-        'taggit.taggeditem': {
-            'Meta': {'object_name': 'TaggedItem'},
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'taggit_taggeditem_tagged_items'", 'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'object_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
-            'tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'taggit_taggeditem_items'", 'to': "orm['taggit.Tag']"})
-        }
-    }
-
-    complete_apps = ['schedule']
+    operations = [
+        migrations.CreateModel(
+            name='CompleteSchedulePlugin',
+            fields=[
+                ('cmsplugin_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='cms.CMSPlugin')),
+                ('title', models.CharField(max_length=100, verbose_name='title', blank=True)),
+                ('row_duration', models.IntegerField(default=15, verbose_name='Duration of one row', choices=[(15, '15 Minutes'), (30, '30 Minutes'), (45, '45 Minutes'), (60, '60 Minutes')])),
+                ('merge_sections', models.BooleanField(default=False, verbose_name='Merge different section into same table')),
+                ('sections', models.ManyToManyField(to='conference.Section', verbose_name='sections', blank=True)),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=('cms.cmsplugin',),
+        ),
+        migrations.CreateModel(
+            name='Session',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(max_length=100, verbose_name='title')),
+                ('description', models.TextField(max_length=400, verbose_name='description')),
+                ('abstract', models.TextField(verbose_name='abstract')),
+                ('notes', models.TextField(verbose_name='notes', blank=True)),
+                ('submission_date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='submission date', editable=False)),
+                ('modified_date', models.DateTimeField(null=True, verbose_name='modification date', blank=True)),
+                ('language', models.CharField(default=b'de', max_length=5, verbose_name='language', choices=[(b'de', 'German'), (b'en', 'English')])),
+                ('accept_recording', models.BooleanField(default=True)),
+                ('start', models.DateTimeField(null=True, verbose_name='start time', blank=True)),
+                ('end', models.DateTimeField(null=True, verbose_name='end time', blank=True)),
+                ('is_global', models.BooleanField(default=False, verbose_name='is global')),
+                ('released', models.BooleanField(default=False, verbose_name='released')),
+                ('slides_url', models.URLField(null=True, verbose_name='Slides URL', blank=True)),
+                ('video_url', models.URLField(null=True, verbose_name='Video URL', blank=True)),
+                ('max_attendees', models.PositiveSmallIntegerField(null=True, verbose_name='Max attendees', blank=True)),
+                ('additional_speakers', models.ManyToManyField(related_name='session_participations', verbose_name='additional speakers', to='speakers.Speaker', blank=True)),
+                ('audience_level', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='target-audience', to='conference.AudienceLevel')),
+                ('available_timeslots', models.ManyToManyField(to='proposals.TimeSlot', verbose_name='available timeslots', blank=True)),
+                ('conference', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='conference', to='conference.Conference')),
+                ('duration', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='duration', to='conference.SessionDuration')),
+                ('kind', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='type', to='conference.SessionKind')),
+                ('location', models.ManyToManyField(to='conference.Location', verbose_name='location', blank=True)),
+                ('proposal', models.ForeignKey(related_name='session', verbose_name='proposal', blank=True, to='proposals.Proposal', null=True)),
+                ('section', models.ForeignKey(related_name='sessions', verbose_name='section', blank=True, to='conference.Section', null=True)),
+                ('speaker', models.ForeignKey(related_name='sessions', on_delete=django.db.models.deletion.PROTECT, verbose_name='speaker', to='speakers.Speaker')),
+                ('tags', pyconde.tagging.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags')),
+                ('track', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='track', blank=True, to='conference.Track', null=True)),
+            ],
+            options={
+                'verbose_name': 'session',
+                'verbose_name_plural': 'sessions',
+            },
+            bases=(pyconde.schedule.models.LocationMixin, models.Model),
+        ),
+        migrations.CreateModel(
+            name='SideEvent',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255, verbose_name='name')),
+                ('description', models.TextField(null=True, verbose_name='description', blank=True)),
+                ('start', models.DateTimeField(verbose_name='start time')),
+                ('end', models.DateTimeField(verbose_name='end time')),
+                ('is_global', models.BooleanField(default=False, verbose_name='is global')),
+                ('is_pause', models.BooleanField(default=False, verbose_name='is break')),
+                ('is_recordable', models.BooleanField(default=False, verbose_name='is recordable')),
+                ('icon', models.CharField(blank=True, max_length=50, null=True, verbose_name='icon', choices=[(b'coffee', 'Coffee cup'), (b'glass', 'Glass'), (b'lightbulb-o', 'Lightbulb'), (b'moon-o', 'Moon'), (b'cutlery', 'Cutlery')])),
+                ('video_url', models.URLField(null=True, verbose_name='Video URL', blank=True)),
+                ('conference', models.ForeignKey(verbose_name='conference', to='conference.Conference')),
+                ('lightning_talks', sortedm2m.fields.SortedManyToManyField(help_text=None, to='lightningtalks.LightningTalk', blank=True)),
+                ('location', models.ManyToManyField(to='conference.Location', verbose_name='location', blank=True)),
+                ('section', models.ForeignKey(related_name='side_events', verbose_name='section', blank=True, to='conference.Section', null=True)),
+            ],
+            bases=(pyconde.schedule.models.LocationMixin, models.Model),
+        ),
+    ]

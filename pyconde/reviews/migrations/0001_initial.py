@@ -1,280 +1,180 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        
-        # Adding model 'ProposalMetaData'
-        db.create_table('reviews_proposalmetadata', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('proposal', self.gf('django.db.models.fields.related.OneToOneField')(related_name='review_metadata', unique=True, to=orm['proposals.Proposal'])),
-            ('num_comments', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('num_reviews', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('latest_activity_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('latest_comment_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('latest_review_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('score', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-        ))
-        db.send_create_signal('reviews', ['ProposalMetaData'])
-
-        # Adding model 'ProposalVersion'
-        db.create_table('reviews_proposalversion', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('conference', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.Conference'])),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('description', self.gf('django.db.models.fields.TextField')(max_length=400)),
-            ('abstract', self.gf('django.db.models.fields.TextField')()),
-            ('speaker', self.gf('django.db.models.fields.related.ForeignKey')(related_name='proposalversions', to=orm['speakers.Speaker'])),
-            ('submission_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.utcnow)),
-            ('modified_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('kind', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.SessionKind'])),
-            ('audience_level', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.AudienceLevel'])),
-            ('duration', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.SessionDuration'])),
-            ('track', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['conference.Track'], null=True, blank=True)),
-            ('original', self.gf('django.db.models.fields.related.ForeignKey')(related_name='versions', to=orm['proposals.Proposal'])),
-            ('creator', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('pub_date', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal('reviews', ['ProposalVersion'])
-
-        # Adding M2M table for field additional_speakers on 'ProposalVersion'
-        db.create_table('reviews_proposalversion_additional_speakers', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('proposalversion', models.ForeignKey(orm['reviews.proposalversion'], null=False)),
-            ('speaker', models.ForeignKey(orm['speakers.speaker'], null=False))
-        ))
-        db.create_unique('reviews_proposalversion_additional_speakers', ['proposalversion_id', 'speaker_id'])
-
-        # Adding model 'Review'
-        db.create_table('reviews_review', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('rating', self.gf('django.db.models.fields.CharField')(max_length=2)),
-            ('summary', self.gf('django.db.models.fields.TextField')()),
-            ('pub_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('proposal', self.gf('django.db.models.fields.related.ForeignKey')(related_name='reviews', to=orm['proposals.Proposal'])),
-            ('proposal_version', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['reviews.ProposalVersion'], null=True, blank=True)),
-        ))
-        db.send_create_signal('reviews', ['Review'])
-
-        # Adding unique constraint on 'Review', fields ['user', 'proposal']
-        db.create_unique('reviews_review', ['user_id', 'proposal_id'])
-
-        # Adding model 'Comment'
-        db.create_table('reviews_comment', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('author', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('content', self.gf('django.db.models.fields.TextField')()),
-            ('pub_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('proposal', self.gf('django.db.models.fields.related.ForeignKey')(related_name='comments', to=orm['proposals.Proposal'])),
-            ('proposal_version', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['reviews.ProposalVersion'], null=True, blank=True)),
-            ('deleted', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('deleted_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('deleted_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='deleted_comments', null=True, to=orm['auth.User'])),
-            ('deleted_reason', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-        ))
-        db.send_create_signal('reviews', ['Comment'])
+from django.db import migrations, models
+import django.db.models.deletion
+import django.utils.timezone
+from django.conf import settings
+import pyconde.tagging
 
 
-    def backwards(self, orm):
-        
-        # Removing unique constraint on 'Review', fields ['user', 'proposal']
-        db.delete_unique('reviews_review', ['user_id', 'proposal_id'])
+class Migration(migrations.Migration):
 
-        # Deleting model 'ProposalMetaData'
-        db.delete_table('reviews_proposalmetadata')
+    dependencies = [
+        ('speakers', '__first__'),
+        ('taggit', '0002_auto_20150616_2121'),
+        ('proposals', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('conference', '0001_initial'),
+    ]
 
-        # Deleting model 'ProposalVersion'
-        db.delete_table('reviews_proposalversion')
-
-        # Removing M2M table for field additional_speakers on 'ProposalVersion'
-        db.delete_table('reviews_proposalversion_additional_speakers')
-
-        # Deleting model 'Review'
-        db.delete_table('reviews_review')
-
-        # Deleting model 'Comment'
-        db.delete_table('reviews_comment')
-
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'conference.audiencelevel': {
-            'Meta': {'object_name': 'AudienceLevel'},
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'level': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'})
-        },
-        'conference.conference': {
-            'Meta': {'object_name': 'Conference'},
-            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'reviews_active': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
-            'reviews_end_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'reviews_start_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'start_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'timezone': ('timezones.fields.TimeZoneField', [], {'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'conference.sessionduration': {
-            'Meta': {'object_name': 'SessionDuration'},
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'minutes': ('django.db.models.fields.IntegerField', [], {}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'})
-        },
-        'conference.sessionkind': {
-            'Meta': {'object_name': 'SessionKind'},
-            'closed': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'end_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
-            'start_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
-        },
-        'conference.track': {
-            'Meta': {'ordering': "['order']", 'object_name': 'Track'},
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
-            'visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'proposals.proposal': {
-            'Meta': {'object_name': 'Proposal'},
-            'abstract': ('django.db.models.fields.TextField', [], {}),
-            'additional_speakers': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'proposal_participations'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['speakers.Speaker']"}),
-            'audience_level': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.AudienceLevel']"}),
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'description': ('django.db.models.fields.TextField', [], {'max_length': '400'}),
-            'duration': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.SessionDuration']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'kind': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.SessionKind']"}),
-            'modified_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'speaker': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'proposals'", 'to': "orm['speakers.Speaker']"}),
-            'submission_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.utcnow'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'track': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Track']", 'null': 'True', 'blank': 'True'})
-        },
-        'reviews.comment': {
-            'Meta': {'object_name': 'Comment'},
-            'author': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'content': ('django.db.models.fields.TextField', [], {}),
-            'deleted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'deleted_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'deleted_comments'", 'null': 'True', 'to': "orm['auth.User']"}),
-            'deleted_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'deleted_reason': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'proposal': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'comments'", 'to': "orm['proposals.Proposal']"}),
-            'proposal_version': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['reviews.ProposalVersion']", 'null': 'True', 'blank': 'True'}),
-            'pub_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'})
-        },
-        'reviews.proposal': {
-            'Meta': {'object_name': 'Proposal', 'db_table': "'proposals_proposal'", '_ormbases': ['proposals.Proposal'], 'proxy': 'True'}
-        },
-        'reviews.proposalmetadata': {
-            'Meta': {'object_name': 'ProposalMetaData'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'latest_activity_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'latest_comment_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'latest_review_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'num_comments': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'num_reviews': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'proposal': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'review_metadata'", 'unique': 'True', 'to': "orm['proposals.Proposal']"}),
-            'score': ('django.db.models.fields.FloatField', [], {'default': '0.0'})
-        },
-        'reviews.proposalversion': {
-            'Meta': {'object_name': 'ProposalVersion'},
-            'abstract': ('django.db.models.fields.TextField', [], {}),
-            'additional_speakers': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'proposalversion_participations'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['speakers.Speaker']"}),
-            'audience_level': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.AudienceLevel']"}),
-            'conference': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Conference']"}),
-            'creator': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'description': ('django.db.models.fields.TextField', [], {'max_length': '400'}),
-            'duration': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.SessionDuration']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'kind': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.SessionKind']"}),
-            'modified_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'original': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'versions'", 'to': "orm['proposals.Proposal']"}),
-            'pub_date': ('django.db.models.fields.DateTimeField', [], {}),
-            'speaker': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'proposalversions'", 'to': "orm['speakers.Speaker']"}),
-            'submission_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.utcnow'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'track': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['conference.Track']", 'null': 'True', 'blank': 'True'})
-        },
-        'reviews.review': {
-            'Meta': {'unique_together': "(('user', 'proposal'),)", 'object_name': 'Review'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'proposal': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reviews'", 'to': "orm['proposals.Proposal']"}),
-            'proposal_version': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['reviews.ProposalVersion']", 'null': 'True', 'blank': 'True'}),
-            'pub_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'rating': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
-            'summary': ('django.db.models.fields.TextField', [], {}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
-        },
-        'speakers.speaker': {
-            'Meta': {'object_name': 'Speaker'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'speaker_profile'", 'unique': 'True', 'to': "orm['auth.User']"})
-        },
-        'taggit.tag': {
-            'Meta': {'object_name': 'Tag'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100', 'db_index': 'True'})
-        },
-        'taggit.taggeditem': {
-            'Meta': {'object_name': 'TaggedItem'},
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'taggit_taggeditem_tagged_items'", 'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'object_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
-            'tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'taggit_taggeditem_items'", 'to': "orm['taggit.Tag']"})
-        }
-    }
-
-    complete_apps = ['reviews']
+    operations = [
+        migrations.CreateModel(
+            name='Comment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('content', models.TextField(verbose_name='content')),
+                ('pub_date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='publication date')),
+                ('deleted', models.BooleanField(default=False, verbose_name='deleted')),
+                ('deleted_date', models.DateTimeField(null=True, verbose_name='deleted at', blank=True)),
+                ('deleted_reason', models.TextField(null=True, verbose_name='deletion reason', blank=True)),
+                ('author', models.ForeignKey(verbose_name='author', to=settings.AUTH_USER_MODEL)),
+                ('deleted_by', models.ForeignKey(related_name='deleted_comments', verbose_name='deleted by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'verbose_name': 'comment',
+                'verbose_name_plural': 'comments',
+            },
+        ),
+        migrations.CreateModel(
+            name='ProposalMetaData',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('num_comments', models.PositiveIntegerField(default=0, verbose_name='number of comments')),
+                ('num_reviews', models.PositiveIntegerField(default=0, verbose_name='number of reviews')),
+                ('latest_activity_date', models.DateTimeField(null=True, verbose_name='latest activity', blank=True)),
+                ('latest_comment_date', models.DateTimeField(null=True, verbose_name='latest comment', blank=True)),
+                ('latest_review_date', models.DateTimeField(null=True, verbose_name='latest review', blank=True)),
+                ('latest_version_date', models.DateTimeField(null=True, verbose_name='latest version', blank=True)),
+                ('score', models.FloatField(default=0.0, verbose_name='score')),
+            ],
+            options={
+                'verbose_name': 'proposal metadata',
+                'verbose_name_plural': 'proposal metadata',
+            },
+        ),
+        migrations.CreateModel(
+            name='ProposalVersion',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(max_length=100, verbose_name='title')),
+                ('description', models.TextField(max_length=400, verbose_name='description')),
+                ('abstract', models.TextField(verbose_name='abstract')),
+                ('notes', models.TextField(verbose_name='notes', blank=True)),
+                ('submission_date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='submission date', editable=False)),
+                ('modified_date', models.DateTimeField(null=True, verbose_name='modification date', blank=True)),
+                ('language', models.CharField(default=b'de', max_length=5, verbose_name='language', choices=[(b'de', 'German'), (b'en', 'English')])),
+                ('accept_recording', models.BooleanField(default=True)),
+                ('pub_date', models.DateTimeField(verbose_name='publication date')),
+                ('additional_speakers', models.ManyToManyField(related_name='proposalversion_participations', verbose_name='additional speakers', to='speakers.Speaker', blank=True)),
+                ('audience_level', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='target-audience', to='conference.AudienceLevel')),
+                ('available_timeslots', models.ManyToManyField(to='proposals.TimeSlot', verbose_name='available timeslots', blank=True)),
+                ('conference', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='conference', to='conference.Conference')),
+                ('creator', models.ForeignKey(verbose_name='creator', to=settings.AUTH_USER_MODEL)),
+                ('duration', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='duration', to='conference.SessionDuration')),
+                ('kind', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='type', to='conference.SessionKind')),
+            ],
+            options={
+                'verbose_name': 'proposal version',
+                'verbose_name_plural': 'proposal versions',
+            },
+        ),
+        migrations.CreateModel(
+            name='Review',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('rating', models.CharField(max_length=2, verbose_name='rating', choices=[(b'-1', b'-1'), (b'-0', b'-0'), (b'+0', b'+0'), (b'+1', b'+1')])),
+                ('summary', models.TextField(verbose_name='summary')),
+                ('pub_date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='publication date')),
+            ],
+            options={
+                'verbose_name': 'review',
+                'verbose_name_plural': 'reviews',
+            },
+        ),
+        migrations.CreateModel(
+            name='Reviewer',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('state', models.PositiveSmallIntegerField(default=0, verbose_name='state', choices=[(0, 'pending request'), (1, 'request accepted'), (2, 'request declined')])),
+                ('conference', models.ForeignKey(to='conference.Conference')),
+                ('user', models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name': 'reviewer',
+                'verbose_name_plural': 'reviewers',
+            },
+        ),
+        migrations.CreateModel(
+            name='Proposal',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+            },
+            bases=('proposals.proposal',),
+        ),
+        migrations.AddField(
+            model_name='review',
+            name='proposal',
+            field=models.ForeignKey(related_name='reviews', verbose_name='proposal', to='reviews.Proposal'),
+        ),
+        migrations.AddField(
+            model_name='review',
+            name='proposal_version',
+            field=models.ForeignKey(verbose_name='proposal version', blank=True, to='reviews.ProposalVersion', null=True),
+        ),
+        migrations.AddField(
+            model_name='review',
+            name='user',
+            field=models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
+            model_name='proposalversion',
+            name='original',
+            field=models.ForeignKey(related_name='versions', verbose_name='original proposal', to='proposals.Proposal'),
+        ),
+        migrations.AddField(
+            model_name='proposalversion',
+            name='speaker',
+            field=models.ForeignKey(related_name='proposalversions', on_delete=django.db.models.deletion.PROTECT, verbose_name='speaker', to='speakers.Speaker'),
+        ),
+        migrations.AddField(
+            model_name='proposalversion',
+            name='tags',
+            field=pyconde.tagging.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags'),
+        ),
+        migrations.AddField(
+            model_name='proposalversion',
+            name='track',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='track', blank=True, to='conference.Track', null=True),
+        ),
+        migrations.AddField(
+            model_name='proposalmetadata',
+            name='latest_proposalversion',
+            field=models.ForeignKey(verbose_name='latest proposal version', blank=True, to='reviews.ProposalVersion', null=True),
+        ),
+        migrations.AddField(
+            model_name='proposalmetadata',
+            name='proposal',
+            field=models.OneToOneField(related_name='review_metadata', verbose_name='proposal', to='reviews.Proposal'),
+        ),
+        migrations.AddField(
+            model_name='comment',
+            name='proposal',
+            field=models.ForeignKey(related_name='comments', verbose_name='proposal', to='reviews.Proposal'),
+        ),
+        migrations.AddField(
+            model_name='comment',
+            name='proposal_version',
+            field=models.ForeignKey(verbose_name='proposal version', blank=True, to='reviews.ProposalVersion', null=True),
+        ),
+        migrations.AlterUniqueTogether(
+            name='reviewer',
+            unique_together=set([('conference', 'user')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='review',
+            unique_together=set([('user', 'proposal')]),
+        ),
+    ]

@@ -23,7 +23,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from django.contrib.auth import models as auth_models
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -654,7 +654,7 @@ class AssignTicketView(LoginRequiredMixin, generic_views.View):
         self.form = forms.TicketAssignmentForm(
             data=self.request.POST, current_user=self.request.user)
         if self.form.is_valid():
-            user = auth_models.User.objects.get(
+            user = get_user_model().objects.get(
                 username=self.form.cleaned_data['username'])
             self.ticket.user = user
             self.ticket.save()
