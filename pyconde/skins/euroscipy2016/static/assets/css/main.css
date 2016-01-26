@@ -1,0 +1,95 @@
+body {
+    height:100%;
+}
+.main-nav * {
+    color: #FFFFFF!important;
+    background-color: #005db8!important;
+    border: none!important;
+}
+.navbar {
+    border-radius: 0;
+    height: 38px;
+    z-index: 2;
+}
+
+.navbar .nav li {
+    height: 38px;
+    font-size: 120%;
+}
+
+.language-link {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 90%;
+    color: #005db8!important;
+    background-color: #F3F8F9!important;
+    padding: 3px!important;
+}
+.language-link.active {
+    color: #FFF!important;
+    border-radius: 15px!important;
+    background-color: #005db8!important;
+}
+.language {
+    height: auto!important;
+    padding: 1px!important;
+    margin-top: 12px;
+    background-color: #F3F8F9!important;
+}
+.language:first-child {
+    padding-left: 2px!important;
+}
+.language:first-child, .language-link:first-child {
+    -webkit-border-top-left-radius: 15px!important;
+    -webkit-border-bottom-left-radius: 15px!important;
+    -moz-border-radius-topleft: 15px!important;
+    -moz-border-radius-bottomleft: 15px!important;
+    border-top-left-radius: 15px!important;
+    border-bottom-left-radius: 15px!important;
+}
+.language:last-child {
+    padding-right: 2px!important;
+}
+.language:last-child, .language-link:last-child {
+    -webkit-border-top-right-radius: 15px!important;
+    -webkit-border-bottom-right-radius: 15px!important;
+    -moz-border-radius-topright: 15px!important;
+    -moz-border-radius-bottomright: 15px!important;
+    border-top-right-radius: 15px!important;
+    border-bottom-right-radius: 15px!important;
+}
+
+.navbar .nav li a {
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+header {
+    background-color: #F3F8F9;
+    height: 180px;
+}
+
+.top-bar {
+    padding-bottom: 1.5em;
+    padding-left: 0;
+}
+
+.logo {
+    z-index: 5;
+}
+
+#main {
+    height: 100%;
+}
+
+footer {
+    color: #FFFFFF;
+    background-color: #6B7A81;
+    width: 100%;
+    height: 250px;
+    bottom: 0
+}
+footer a {
+    color: #FFFFFF;
+}

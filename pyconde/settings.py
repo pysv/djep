@@ -86,6 +86,7 @@ class Base(Configuration):
         # django allauth for account creation and managing
         'allauth',
         'allauth.account',
+        'allauth.socialaccount',
 
         'sortedm2m',
         'crispy_forms',
@@ -393,7 +394,7 @@ class Base(Configuration):
     #
     # allauth settings
     #
-    ACCOUNT_AUTHENTICATION_METHOD = 'email'
+    ACCOUNT_AUTHENTICATION_METHOD = 'username'
     ACCOUNT_EMAIL_REQUIRED = True
     ACCOUNT_EMAIL_VERIFICATION = values.Value('mandatory')
     ACCOUNT_EMAIL_SUBJECT_PREFIX = EMAIL_SUBJECT_PREFIX
