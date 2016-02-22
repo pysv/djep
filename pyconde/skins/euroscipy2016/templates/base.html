@@ -12,6 +12,7 @@
         <script type="text/javascript" src="{% static "assets/js/vendor/modernizr.min.js"%}"></script>
         {% endcompress %}
         <link rel="stylesheet" href="{% static "assets/bower_components/bootstrap/dist/css/bootstrap.min.css" %}"></script>
+        <link rel="stylesheet" href="{% static "assets/bower_components/font-awesome/css/font-awesome.min.css" %}"></script>
         <link rel="stylesheet" href="{% static "assets/css/main.css" %}">
         {% block site_meta %}
         <meta name="author" content="Python Software Verband e.V.">
@@ -24,9 +25,6 @@
         <meta property="og:description" content="{% block og_description %}{% endblock %}" />
         <link rel="alternate" type="application/rss+xml" href="http://blog.europython.eu/rss">
         {% endblock %}
-        {# Typekit loading should happen before anything else to prevent FOUT #}
-        <script type="text/javascript" src="//use.typekit.net/kxy0ijj.js"></script>
-        <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
         <link rel="icon" href="{% static "assets/images/favicon.ico" %}">
         <link rel="apple-touch-icon-precomposed" href="{% static "assets/images/favicon-152.png" %}">
         {% render_block "css" postprocessor "compressor.contrib.sekizai.compress" %}
@@ -83,31 +81,31 @@
             {% endblock %}
         </div>
 
-        <footer>
-            <div class="doormat">
-               <div id="footer-legal">
+        <footer id="footer">
+            <div class="row">
+               <div id="footer-legal" class="col-md-3 col-md-offset-3 col-sm-12">
                     <ul>
-                        <li><a href="{#% page_url "legal-notice" %#}">{#% page_attribute "title" "legal-notice" %#} ~ Legal Notice ~</a></li>
-                        <li><a href="{#% page_url "terms-conditions" %#}">{#% page_attribute "title" "terms-conditions" %#} ~ Terms of Conditions ~</a></li>
-                        <li><a href="{#% page_url "privacy-policy" %#}">{#% page_attribute "title" "privacy-policy" %#} ~ Privacy Policy ~</a></li>
-                        <li><a href="{#% page_url "code-of-conduct" %#}">{#% page_attribute "title" "code-of-conduct" %#} ~ Code of Conduct~</a></li>
-                        <li><a href="mailto:{{ SUPPORT_EMAIL }}">{#% trans "Get in touch" %#} ~ Get in touch ~</a></li>
+                        <li><a href="{#% page_url "legal-notice" %#}">{#% page_attribute "title" "legal-notice" %#}Legal Notice</a></li>
+                        <li><a href="{#% page_url "terms-conditions" %#}">{#% page_attribute "title" "terms-conditions" %#}Terms of Conditions</a></li>
+                        <li><a href="{#% page_url "privacy-policy" %#}">{#% page_attribute "title" "privacy-policy" %#}Privacy Policy</a></li>
+                        <li><a href="{#% page_url "code-of-conduct" %#}">{#% page_attribute "title" "code-of-conduct" %#}Code of Conduc</a></li>
+                        <li><a href="mailto:{{ SUPPORT_EMAIL }}">{#% trans "Get in touch" %#}Get in touch</a></li>
                     </ul>
                 </div>
-                <div id="footer-social">
+                <div id="footer-social" class="col-md-3 col-sm-12">
                     <ul>
-                        <!--li><a href="https://twitter.com/europython" class="twitter">
+                        <li><a href="https://twitter.com/euroscipy" class="twitter">
                             <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+                                <i class="fa fa-circle fa-stack-2x"></i>
                                 <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
                             </span>
-                            {% trans "Follow @europython" %}</a></li>
-                        <li><a href="https://www.facebook.com/europython" class="facebook">
+                            {% trans "Follow @EuroSciPy" %}</a></li>
+                        <!--li><a href="https://www.facebook.com/scipyconf/" class="facebook">
                             <span class="fa-stack fa-lg">
                                 <i class="fa fa-circle fa-stack-2x"></i>
                                 <i class="fa fa-facebook fa-stack-1x"></i>
                             </span>
-                            {% trans "Like EuroPython" %}</a></li>
+                            {% trans "Like EuroSciPy" %}</a></li>
                         <li><a href="https://plus.google.com/+Ep14Org" class="google-plus">
                             <span class="fa-stack fa-lg">
                                 <i class="fa fa-circle fa-stack-2x"></i>
@@ -116,14 +114,21 @@
                             {% trans "+1 EuroPython" %}</a></li-->
                     </ul>
                 </div>
-                <div id="footer-ack">
+            </div>
+
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <hr />
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="footer-ack" class="col-md-4 col-md-offset-2 col-sm-12">
                     <p>SciPy Conferences by SciPy Organizers</p>
                 </div>
-
-            </div>
-            <div id="copyright">
-                <p>&copy; 2013-{% now "Y" %} <a href="http://python-verband.org/">Python Software Verband e.V.</a></p>
-                <p><a href="https://github.com/pysv/djep"><i class="fa fa-github fa-lg"> </i> We are on GitHub</a></p>
+                <div id="github" class="col-md-2 col-md-offset-2 col-sm-12">
+                    <p><a href="https://github.com/pysv/djep"><i class="fa fa-github fa-lg"> </i> We are on GitHub</a></p>
+                </div>
             </div>
         </footer>
 
@@ -151,6 +156,7 @@
         {% compress js %}
         <script type="text/javascript" src="{% static "assets/bower_components/bootstrap/dist/js/bootstrap.min.js"%}"></script>
         <script type="text/javascript" src="{% static "assets/bower_components/spin.js/spin.min.js"%}"></script>
+        <script type="text/javascript" src="{% static "assets/js/main.js" %}"></script>
         {% endcompress %}
         {% block extra_foot %}{% endblock %}
     </body>

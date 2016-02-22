@@ -1,11 +1,19 @@
-body {
-    height:100%;
+html, body {
+    min-height:100%;
+    overflow-x: hidden;
 }
+
+#main {
+  overflow:auto;
+  padding-bottom: 260px; /* this needs to be bigger than footer height*/
+}
+
 .main-nav * {
     color: #FFFFFF!important;
     background-color: #005db8!important;
     border: none!important;
 }
+
 .navbar {
     border-radius: 0;
     height: 38px;
@@ -67,7 +75,7 @@ body {
 
 header {
     background-color: #F3F8F9;
-    height: 180px;
+    min-height: 180px;
 }
 
 .top-bar {
@@ -79,17 +87,40 @@ header {
     z-index: 5;
 }
 
-#main {
-    height: 100%;
-}
-
 footer {
+    padding-top: 1em;
+    padding-bottom: 1em;
     color: #FFFFFF;
     background-color: #6B7A81;
     width: 100%;
-    height: 250px;
-    bottom: 0
+    min-height: 250px;
+    margin-top: -250px; /* negative value of footer height */
+    clear:both;
 }
+
 footer a {
     color: #FFFFFF;
+}
+
+footer a:hover {
+    text-decoration: none;
+    color: #005DB8;
+}
+
+footer ul {
+    list-style-type: none;
+    padding-left: 0;
+    font-size: 120%;
+}
+
+.twitter .fa-inverse {
+    color: #6B7A81;
+}
+
+.twitter .fa-inverse:hover {
+    color: #FFFFFF;
+}
+
+#github, #footer-social {
+    text-align: right;
 }

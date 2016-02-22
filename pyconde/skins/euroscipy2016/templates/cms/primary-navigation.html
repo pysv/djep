@@ -7,14 +7,14 @@
         <span class="sr-only">Toggle navigation</span>
         <i class="glyphicon glyphicon-align-justify"></i>
       </button>
-      <a class="navbar-brand" href="#">EuroSciPy 2016</a>
+      <a class="navbar-brand" href="/">EuroSciPy 2016</a>
     </div>
 
     <div class="collapse navbar-collapse" id="main-nav">
       <ul class="nav navbar-nav">
         {% for child in children %}
         <li class="{% if child.children %}has-dropdown{% endif %} {% if child.selected or child.ancestor %} active{% endif %}">
-            <a class="dropdown-toggle" data-toggle="dropdown">
+            <a {% if child.children %}class="dropdown-toggle" data-toggle="dropdown"{% endif %} href="{{ child.attr.redirect_url|default:child.get_absolute_url}}">
                 {{ child.get_menu_title }} <span class="caret"></span>
             </a>
             {% if child.children %}
