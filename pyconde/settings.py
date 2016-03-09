@@ -38,11 +38,11 @@ class Base(Configuration):
 
     EMAIL_HOST = values.Value()
 
-    DEFAULT_FROM_EMAIL = values.EmailValue('noreply@ep14.org')
+    DEFAULT_FROM_EMAIL = values.EmailValue('info@euroscipy.org')
 
-    SERVER_EMAIL = values.EmailValue('noreply@ep14.org')
+    SERVER_EMAIL = values.EmailValue('info@euroscipy.org')
 
-    SUPPORT_EMAIL = values.EmailValue('helpdesk@europython.eu')
+    SUPPORT_EMAIL = values.EmailValue('info@euroscipy.org')
 
     TIME_ZONE = 'Europe/Berlin'
 
@@ -50,7 +50,7 @@ class Base(Configuration):
 
     SECRET_KEY = values.SecretValue()
 
-    EMAIL_SUBJECT_PREFIX = values.Value('[EuroPython 2014] ')
+    EMAIL_SUBJECT_PREFIX = values.Value('[EuroSciPy 2016] ')
 
     USE_I18N = True
 
