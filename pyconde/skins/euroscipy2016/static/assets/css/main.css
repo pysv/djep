@@ -3,11 +3,6 @@ html, body {
     overflow-x: hidden;
 }
 
-#main {
-  overflow:auto;
-  padding-bottom: 260px; /* this needs to be bigger than footer height*/
-}
-
 .main-nav * {
     color: #FFFFFF!important;
     background-color: #005db8!important;
@@ -32,6 +27,7 @@ html, body {
     color: #005db8!important;
     background-color: #F3F8F9!important;
     padding: 3px!important;
+    text-align: center;
 }
 .language-link.active {
     color: #FFF!important;
@@ -43,9 +39,12 @@ html, body {
     padding: 1px!important;
     margin-top: 12px;
     background-color: #F3F8F9!important;
+    width: 35px;
+    float: left;
 }
 .language:first-child {
     padding-left: 2px!important;
+    margin-left: 1em;
 }
 .language:first-child, .language-link:first-child {
     -webkit-border-top-left-radius: 15px!important;
@@ -57,6 +56,7 @@ html, body {
 }
 .language:last-child {
     padding-right: 2px!important;
+    margin-right: 1em;
 }
 .language:last-child, .language-link:last-child {
     -webkit-border-top-right-radius: 15px!important;
@@ -94,7 +94,6 @@ footer {
     background-color: #6B7A81;
     width: 100%;
     min-height: 250px;
-    margin-top: -250px; /* negative value of footer height */
     clear:both;
 }
 

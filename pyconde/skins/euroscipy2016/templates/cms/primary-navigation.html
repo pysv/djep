@@ -1,49 +1,45 @@
 {% load menu_tags i18n static %}
 
 <nav class="navbar navbar-default">
-  <div class="container-fluid">
+  <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav" aria-expanded="false">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#euroscipy-nav" aria-expanded="false" aria-controls="navbar">
         <span class="sr-only">Toggle navigation</span>
-        <i class="glyphicon glyphicon-align-justify"></i>
+        <i class="fa fa-align-justify"></i>
       </button>
       <a class="navbar-brand" href="/">EuroSciPy 2016</a>
     </div>
-
-    <div class="collapse navbar-collapse" id="main-nav">
+    <div id="euroscipy-nav" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         {% for child in children %}
-        <li class="{% if child.children %}has-dropdown{% endif %} {% if child.selected or child.ancestor %} active{% endif %}">
-            <a {% if child.children %}class="dropdown-toggle" data-toggle="dropdown"{% endif %} href="{{ child.attr.redirect_url|default:child.get_absolute_url}}">
-                {{ child.get_menu_title }} <span class="caret"></span>
-            </a>
-            {% if child.children %}
-            <ul class="dropdown-menu">
-                {% for child in child.children %}
-                <li class="{% if child.children %}has-dropdown{% endif %} {% if child.selected or child.ancestor %} active{% endif %}">
-                    <a href="{{ child.attr.redirect_url|default:child.get_absolute_url }}">
-                        {{ child.get_menu_title }}
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+        <li class="{% if child.children %}dropdown{% endif %} {% if child.selected or child.ancestor %} active{% endif %}">
+          <a {% if child.children %}class="dropdown-toggle" data-toggle="dropdown"{% endif %}
+              href="{{ child.attr.redirect_url|default:child.get_absolute_url}}">
+            {{ child.get_menu_title }} {% if child.children %}<span class="caret"></span>{% endif %}
+          </a>
+          {% if child.children %}
+          <ul class="dropdown-menu">
+            {% for child in child.children %}
+            <li class="{% if child.children %}has-dropdown{% endif %} {% if child.selected or child.ancestor %} active{% endif %}">
+              <a href="{{ child.attr.redirect_url|default:child.get_absolute_url }}">
+                {{ child.get_menu_title }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
         </li>
         {% endfor %}
-        <li class="">
-            <a href="#">
-                <i class="fa fa-bars"></i>
-            </a>
-        </li>
       </ul>
 
       {% language_chooser "cms/language_chooser.html" %}
 
       <ul class="nav navbar-nav navbar-right">
-
         {% if user.is_authenticated %}
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.username }} <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            {{ user.username }} <span class="caret"></span>
+          </a>
           <ul class="dropdown-menu">
             <li>
               <a href="{% url 'account_profile' uid=user.pk %}">
@@ -55,26 +51,26 @@
             <li role="separator" class="divider"></li>
             {% if user.is_staff %}
             <li>
-                <a href="{% url "admin:index" %}">
-                    Django Admin
-                </a>
+              <a href="{% url "admin:index" %}">
+                Django Admin
+              </a>
             </li>
             {% endif %}
             {% if perms.accounts.send_user_mails %}
             <li>
-                <a href="{% url "account_sendmail" %}">
-                    {% trans "Send mail" %}
-                </a>
+              <a href="{% url "account_sendmail" %}">
+                {% trans "Send mail" %}
+              </a>
             </li>
             {% endif %}
             {% if perms.sponsorship.add_joboffer %}
-                {% show_menu_below_id "sponsorship" %}
+              {% show_menu_below_id "sponsorship" %}
             {% endif %}
             {% if perms.accounts.see_checkin_info %}
             <li>
-                <a href="{% url "checkin_search" %}">
-                    {% trans "Handle check-in"%}
-                </a>
+              <a href="{% url "checkin_search" %}">
+                {% trans "Handle check-in"%}
+              </a>
             </li>
             {% endif %}
             {% endif %}
@@ -88,17 +84,13 @@
         </li>
         {% else %}
         <li>
-            <a href="{% url 'account_login' %}">{% trans "Login" %}</a>
+          <a href="{% url 'account_login' %}">{% trans "Login" %}</a>
         </li>
         <li>
-            <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>
+          <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>
         </li>
         {% endif %}
-
-
       </ul>
-
-    </div>
-
+    </div><!--/.nav-collapse -->
   </div>
 </nav>
