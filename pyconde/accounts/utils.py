@@ -13,10 +13,7 @@ def get_display_name(user):
     """
     if user is None:
         return None
-    profile = user.profile
-    if profile.display_name:
-        return profile.display_name
-    return user.username
+    return user.get_display_name()
 
 
 def get_full_name(user):
@@ -29,10 +26,7 @@ def get_full_name(user):
     """
     if user is None:
         return None
-    profile = user.profile
-    if profile.full_name:
-        return profile.full_name
-    return get_display_name(user)
+    return user.get_full_name(user)
 
 
 def get_addressed_as(user):
@@ -45,10 +39,9 @@ def get_addressed_as(user):
     """
     if user is None:
         return None
-    profile = user.profile
-    if profile.addressed_as:
-        return profile.addressed_as
-    return get_display_name(user)
+    if user.addressed_as:
+        return user.addressed_as
+    return user.get_display_name()
 
 
 _valid_purchase = ('invoice_created', 'payment_received')
