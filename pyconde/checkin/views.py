@@ -62,8 +62,7 @@ class SearchView(CheckinViewMixin, SearchFormMixin, ListView):
         'user__id',
         'user__username',
         'user__email',
-        'user__profile__full_name',
-        'user__profile__display_name',
+        'user__display_name',
         'id',
         'purchase__id',
         'purchase__company_name',
@@ -74,8 +73,7 @@ class SearchView(CheckinViewMixin, SearchFormMixin, ListView):
         'purchase__user__id',
         'purchase__user__username',
         'purchase__user__email',
-        'purchase__user__profile__full_name',
-        'purchase__user__profile__display_name',
+        'purchase__user__display_name',
         'simcardticket__first_name',
         'simcardticket__last_name',
         'venueticket__first_name',
@@ -90,10 +88,8 @@ class SearchView(CheckinViewMixin, SearchFormMixin, ListView):
     def get_queryset(self):
         queryset = self.model.objects.select_related(
             'user',
-            'user__profile',
             'purchase',
             'purchase__user',
-            'purchase__user__profile',
             'simcardticket',
             'venueticket',
             'ticket_type',
@@ -132,15 +128,16 @@ class SearchView(CheckinViewMixin, SearchFormMixin, ListView):
                         'user_id': ticket.user_id,
                         'username': ticket.user.username,
                         'email': ticket.user.email,
-                        'full_name': ticket.user.profile.full_name,
-                        'display_name': ticket.user.profile.display_name,
-                        'organisation': ticket.user.profile.organisation
+                        'full_name': ticket.user.get_full_name(),
+                        'display_name': ticket.user.get_display_name(),
+                        'organisation': ticket.user.organisation
                     })
                 obj['purchase'] = {
                     'id': ticket.purchase.id,
                     'company_name': ticket.purchase.company_name,
                     'invoice_number': ticket.purchase.invoice_number,
                     'name': ticket.purchase.first_name + ' ' + ticket.purchase.last_name,
+                    'full_name': ticket.purchase.user.get_full_name(),
                     'email': ticket.purchase.email
                 }
                 if ticket.purchase.user_id:
@@ -148,9 +145,9 @@ class SearchView(CheckinViewMixin, SearchFormMixin, ListView):
                         'user_id': ticket.purchase.user_id,
                         'username': ticket.purchase.user.username,
                         'email': ticket.purchase.user.email,
-                        'full_name': ticket.purchase.user.profile.full_name,
-                        'display_name': ticket.purchase.user.profile.display_name,
-                        'organisation': ticket.purchase.user.profile.organisation
+                        'full_name': ticket.purchase.user.get_full_name(),
+                        'display_name': ticket.purchase.user.get_display_name(),
+                        'organisation': ticket.purchase.user.organisation
                     }
 
                 self.object_list.append(obj)
@@ -357,7 +354,8 @@ class OnDeskPurchaseDetailView(CheckinViewMixin, SearchFormMixin, DetailView):
 
     def get_queryset(self):
         qs = super(OnDeskPurchaseDetailView, self).get_queryset()
-        qs = qs.select_related('ticket_set__ticket_type__content_type')
+        # TODO: reenable select_related!
+        # qs = qs.select_related('ticket_set__ticket_type__content_type')
         return qs
 
 purchase_detail_view = OnDeskPurchaseDetailView.as_view()
