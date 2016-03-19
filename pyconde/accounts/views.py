@@ -102,31 +102,39 @@ class AutocompleteTags(generic_views.View):
         return HttpResponse(json.dumps(result), content_type='application/json')
 
 
-class ProfileView(generic_views.TemplateView):
+class ProfileView(generic_views.DetailView):
     """
     Displays a profile page for the given user. If the user also has a
     speaker_profile, also render the information given there.
     """
-
     template_name = 'userprofiles/profile_view.html'
 
-    def get_context_data(self, uid):
-        user = get_object_or_404(get_user_model(), pk=uid)
-        speaker_profile = user.speaker_profile
-        sessions = None
-        profile = user.profile
-        if speaker_profile:
-            sessions = list(chain(
-                speaker_profile.sessions.filter(released=True).all(),
-                speaker_profile.session_participations.filter(released=True).all()
-            ))
-        return {
-            'userobj': user,
-            'speaker_profile': speaker_profile,
-            'sessions': sessions,
-            'profile': profile,
-            'interests': profile.tags.order_by('name').all(),
-        }
+    def get_object(self):
+        return get_object_or_404(get_user_model(), pk=self.kwargs['uid'])
+
+
+class SelfProfileView(generic_views.DetailView):
+    """
+    Displays a profile page for the current active user. If the user also has
+    a speaker_profile, the information of it is also rendered.
+    """
+    template_name = 'userprofiles/profile_view.html'
+
+    def get_object(self):
+        return self.request.user
+
+
+class ProfileUpdateView(generic_views.UpdateView):
+    template_name = 'userprofiles/profile_update.html'
+    fields = ['first_name', 'last_name', 'avatar', 'num_accompanying_children',
+        'age_accompanying_children', 'twitter', 'website', 'organisation', 'display_name',
+        'addressed_as', 'accept_job_offers', 'tags']
+
+    def get_object(self):
+        return self.request.user
+
+    def get_success_url(self):
+        return reverse('account_profile_self')
 
 
 class ReviewerApplication(LoginRequiredMixin, generic_views.FormView):

@@ -457,6 +457,12 @@ class Base(Configuration):
     STATICI18N_DOMAIN = 'djangojs'
     STATICI18N_FILENAME_FUNCTION = 'statici18n.utils.default_filename'
 
+    THUMBNAIL_ALIASES = {
+        '': {
+            'avatar': {'size': (300, 300), 'crop': True},
+        },
+    }
+
 
 class Dev(Base):
     """

@@ -123,3 +123,13 @@ footer ul {
 #github, #footer-social {
     text-align: right;
 }
+
+.spacer {
+    height: 40px;
+}
+
+.gravatar {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}

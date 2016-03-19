@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n account_tags thumbnail markup helper_tags crispy_forms_tags %}
+
+{% block title %}
+    {% blocktrans with username=object.get_display_name %}
+        Update {{ username }}
+    {% endblocktrans %}
+{% endblock %}
+
+{% block page_title %}
+    {% blocktrans with username=object.get_display_name %}
+        Update {{ username }}
+    {% endblocktrans %}
+{% endblock %}
+
+{% block site_content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
+            <a href="{% url 'account_profile_self' %}" class="btn btn-primary">{% trans "Cancel" %}</a>
+        </form>
+    </div>
+</div>
+
+<div class="spacer"></div>
+{% endblock %}

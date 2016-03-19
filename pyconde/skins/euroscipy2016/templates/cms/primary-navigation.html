@@ -38,17 +38,16 @@
         {% if user.is_authenticated %}
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            {{ user.username }} <span class="caret"></span>
+            {{ user.get_display_name }} <i class="fa fa-caret-down"></i>
           </a>
           <ul class="dropdown-menu">
             <li>
-              <a href="{% url 'account_profile' uid=user.pk %}">
-                {% trans "Your profile" %} <i class="fa fa-angle-left"></i>???
+              <a href="{% url 'account_profile_self' %}">
+                {% trans "Account" %}
               </a>
             </li>
 
             {% if user.is_staff or perms.accounts.send_user_mails or perms.sponsorship.add_joboffer or perms.accounts.see_checkin_info %}
-            <li role="separator" class="divider"></li>
             {% if user.is_staff %}
             <li>
               <a href="{% url "admin:index" %}">
@@ -74,7 +73,6 @@
             </li>
             {% endif %}
             {% endif %}
-            <li role="separator" class="divider"></li>
             <li>
               <a href="{% url 'auth_logout' %}">
                 {% trans "Logout" %}
