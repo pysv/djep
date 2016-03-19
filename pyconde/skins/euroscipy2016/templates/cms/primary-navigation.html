@@ -15,7 +15,7 @@
         <li class="{% if child.children %}dropdown{% endif %} {% if child.selected or child.ancestor %} active{% endif %}">
           <a {% if child.children %}class="dropdown-toggle" data-toggle="dropdown"{% endif %}
               href="{{ child.attr.redirect_url|default:child.get_absolute_url}}">
-            {{ child.get_menu_title }} {% if child.children %}<span class="caret"></span>{% endif %}
+            {{ child.get_menu_title }} {% if child.children %} <i class="fa fa-caret-down"></i>{% endif %}
           </a>
           {% if child.children %}
           <ul class="dropdown-menu">
