@@ -7,8 +7,8 @@ from contextlib import closing
 from email.utils import formataddr
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core import mail
+from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
 from django.utils.encoding import force_text
 
@@ -28,7 +28,7 @@ def chunks(l, n):
 
 @app.task(ignore_result=True)
 def sendmail_task(target, subject, message, domain):
-    users = User.objects.all()
+    users = get_user_model().objects.all()
     users = SEND_MAIL_FILTERS[target](users)
 
     prefix = '[%s]' % force_text(current_conference())
