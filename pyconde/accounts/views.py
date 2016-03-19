@@ -126,9 +126,9 @@ class SelfProfileView(generic_views.DetailView):
 
 class ProfileUpdateView(generic_views.UpdateView):
     template_name = 'userprofiles/profile_update.html'
-    fields = ['first_name', 'last_name', 'avatar', 'num_accompanying_children',
-        'age_accompanying_children', 'twitter', 'website', 'organisation', 'display_name',
-        'addressed_as', 'accept_job_offers', 'tags']
+    fields = ['first_name', 'last_name', 'display_name', 'addressed_as', 'twitter', 'website',
+        'organisation', 'num_accompanying_children', 'age_accompanying_children',
+        'accept_job_offers']
 
     def get_object(self):
         return self.request.user
