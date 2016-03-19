@@ -28,7 +28,7 @@ def chunks(l, n):
 
 @app.task(ignore_result=True)
 def sendmail_task(target, subject, message, domain):
-    users = User.objects.select_related('profile').all()
+    users = User.objects.all()
     users = SEND_MAIL_FILTERS[target](users)
 
     prefix = '[%s]' % force_text(current_conference())
