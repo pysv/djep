@@ -6,17 +6,6 @@ from django.core.urlresolvers import reverse
 
 from userprofiles.contrib.emailverification.models import EmailVerification
 
-from . import models
-
-
-def create_profile(backend, details, response, user=None, **kwargs):
-    """
-    Creates a profile object for the new user.
-    """
-    assert user is not None
-    if not models.Profile.objects.filter(user=user).count():
-        models.Profile.objects.create(user=user).save()
-
 
 def show_request_email_form(request, user, **kwargs):
     """

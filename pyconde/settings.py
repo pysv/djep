@@ -324,7 +324,7 @@ class Base(Configuration):
 
     ###########################################################################
     #
-    # Account and profile settings
+    # Account settings
     #
     AVATAR_MIN_DIMENSION = values.TupleValue(converter=int)
     AVATAR_MAX_DIMENSION = values.TupleValue(converter=int)

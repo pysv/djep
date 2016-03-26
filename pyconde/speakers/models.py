@@ -14,9 +14,8 @@ class SpeakerManager(models.Manager):
     use_for_related_fields = True
 
     def get_qs_for_formfield(self):
-        qs = self.select_related('user__profile').only(
-            'user__profile__display_name', 'user__profile__full_name', 'user__profile__user',
-            'user__username')
+        qs = self.select_related('user').only(
+            'user__display_name', 'user__full_name', 'user__username')
         return qs
 
 
@@ -44,4 +43,5 @@ def create_speaker_profile(sender, instance, **kwargs):
     """
     Speaker.objects.get_or_create(user=instance)
 
-signals.post_save.connect(create_speaker_profile, sender=settings.AUTH_USER_MODEL, dispatch_uid='speakers.create_speaker_profile')
+signals.post_save.connect(create_speaker_profile, sender=settings.AUTH_USER_MODEL,
+    dispatch_uid='speakers.create_speaker_profile')

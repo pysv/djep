@@ -21,13 +21,7 @@ def get_ticket_types():
 
 
 def get_users():
-    return User.objects.select_related('profile') \
-                       .only('profile__full_name',
-                             'profile__display_name',
-                             'profile__user',  # for reverse lookup
-                             'username'  # fallback if no display_name
-                             ) \
-                       .all()
+    return User.objects.all()
 
 
 def get_sponsors():

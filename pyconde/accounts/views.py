@@ -62,11 +62,10 @@ class AutocompleteUser(generic_views.View):
         result = []
         if not term:
             return result
-        for profile in models.Profile.objects.filter(
+        for user in models.User.objects.filter(
                 display_name__icontains=term):
-            user = profile.user
             result.append({
-                'label': u'{0} ({1})'.format(profile.display_name,
+                'label': u'{0} ({1})'.format(user.get_display_name(),
                     user.username),
                 'value': user.speaker_profile.pk
             })
@@ -87,9 +86,9 @@ class AutocompleteTags(generic_views.View):
     def get_matching_tags(self, term):
         if not term:
             return []
-        data = list(models.Profile.tags.filter(name__icontains=term)
-                                       .values_list('name', flat=True)
-                                       .all()[:7])
+        data = list(models.User.tags.filter(
+            name__icontains=term).values_list(
+            'name', flat=True).all()[:7])
         return data
 
     def get(self, request):

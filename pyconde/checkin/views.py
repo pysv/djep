@@ -489,7 +489,7 @@ def ticket_badge_view(request, pk):
         url = reverse('checkin_purchase_detail', kwargs={'pk': ticket[0].purchase_id})
         return HttpResponseRedirect(url)
 
-    be = BadgeExporter(ticket, 'https://ep14.org/u{uid}', indent=False)
+    be = BadgeExporter(ticket, indent=False)
     data = be.export()
     pdf = generate_badge(data)
     if pdf is not None:

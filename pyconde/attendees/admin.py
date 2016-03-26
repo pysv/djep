@@ -234,7 +234,7 @@ class VenueTicketAdmin(admin.ModelAdmin):
 
     def queryset(self, request):
         qs = super(VenueTicketAdmin, self).queryset(request)
-        qs = qs.select_related('ticket_type', 'purchase', 'shirtsize', 'user__profile')
+        qs = qs.select_related('ticket_type', 'purchase', 'shirtsize')
         return qs
 
 admin.site.register(VenueTicket, VenueTicketAdmin)

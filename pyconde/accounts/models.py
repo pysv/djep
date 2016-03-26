@@ -100,7 +100,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=False, blank=True)
 
     badge_status = models.ManyToManyField('accounts.BadgeStatus', blank=True,
-        verbose_name=_('Badge status'), related_name='profiles')
+        verbose_name=_('Badge status'), related_name='users')
 
     sessions_attending = models.ManyToManyField('schedule.Session', blank=True,
         related_name='attendees', verbose_name=_('Trainings'),

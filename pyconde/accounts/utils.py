@@ -8,7 +8,7 @@ def get_display_name(user):
     """
     Tries to return (in order):
 
-        * ``user.profile.display_name``
+        * ``user.display_name``
         * ``user.username``
     """
     if user is None:
@@ -20,8 +20,8 @@ def get_full_name(user):
     """
     Tries to return (in order):
 
-        * ``user.profile.full_name``
-        * ``user.profile.display_name``
+        * ``user.full_name``
+        * ``user.display_name``
         * ``user.username``
     """
     if user is None:
@@ -33,8 +33,8 @@ def get_addressed_as(user):
     """
     Tries to return (in order):
 
-        * ``user.profile.addressed_as``
-        * ``user.profile.display_name``
+        * ``user.addressed_as``
+        * ``user.display_name``
         * ``user.username``
     """
     if user is None:
