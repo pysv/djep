@@ -58,54 +58,43 @@ class SignUpForm(auth_forms.UserCreationForm):
             widget=forms.PasswordInput(),
             help_text=_('Please repeat your password.'),
         )
-        account_fields = Fieldset(
-            _('Login information'),
-            Div(Field('username', autofocus="autofocus"), css_class="col-md-12"),
-            Div('email', css_class="col-md-12"),
-            Div('password1', css_class="col-md-12"),
-            Div('password2', css_class="col-md-12"),
-            css_class="row"
+        self.fields['accept_privacy_policy'] = forms.BooleanField(
+            label=_("I read and accepted the privacy policy."),
+            required=True
         )
-        profile_fields = Fieldset(
-            _('Personal information'),
-            Div('first_name', css_class="col-md-12"),
-            Div('last_name', css_class="col-md-12"),
-            Div('short_info', css_class="col-md-12"),
-            Div('avatar', css_class="col-md-12"),
-            Div('display_name', css_class="col-md-12"),
-            Div('addressed_as', css_class="col-md-12"),
-            Div('num_accompanying_children', css_class="col-md-12"),
-            Div('age_accompanying_children', css_class="col-md-12"),
-            css_class="row"
-        )
-        profession_fields = Fieldset(
-            _('Professional information'),
-            Div('organisation', css_class="col-md-12"),
-            Div('twitter', css_class="col-md-12"),
-            Div('website', css_class="col-md-12"),
-            Div(Field('tags', css_class='tags-input'), css_class="col-md-12"),
-            Div('accept_job_offers', css_class="col-md-12"),
-            css_class="row"
-        )
-        privacy_fields = Fieldset(
-            _('Privacy Policy'),
-            #HTML(_('{% load cms_tags %}<p class="control-group">Due to data protection '
-            #       'regulations you need to explicitly accept our '
-            #       '<a href="{% page_url "privacy-policy" %}">privacy policy</a>.</p>')),
-            Div('accept_privacy_policy', css_class="col-md-12"),
-            css_class="row"
-        )
+
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
         self.helper.layout = Layout(
-            account_fields,
-            profile_fields,
-            profession_fields,
-            privacy_fields,
+            Fieldset(
+                _("Account Information"),
+                Field('username', autofocus="autofocus", css_class="col-md-12"),
+                Field('email', css_class="col-md-12"),
+                Field('password1', css_class="col-md-12"),
+                Field('password2', css_class="col-md-12"),
+                css_class="row"
+            ),
+            Fieldset(
+                _("Personal Information"),
+                Field('first_name', css_class="col-md-12"),
+                Field('last_name', css_class="col-md-12"),
+                #HTML(_('{% load cms_tags %}<p class="control-group">Due to data protection '
+                #       'regulations you need to explicitly accept our '
+                #       '<a href="{% page_url "privacy-policy" %}">privacy policy</a>.</p>')),
+                Field('accept_privacy_policy', css_class="col-md-12"),
+                css_class="row"
+            ),
             ButtonHolder(Submit('submit', _('Create account'), css_class='btn btn-primary'))
         )
-        if settings.ACCOUNTS_FALLBACK_TO_GRAVATAR:
-            self.fields['avatar'].help_text = _("""Please upload an image with a side length of at least 300 pixels.<br />If you don't upload an avatar your Gravatar will be used instead.""")
+
+    def signup(self, request, user):
+        """Set attributes of the user.
+
+        This method is required by django-allauth. We are not changing their
+        SignUpView, which leads to having the following code in the form
+        instead of the view.
+        """
+        user.signup(self.cleaned_data['first_name'], self.cleaned_data['last_name'])
 
     def clean_twitter(self):
         """
@@ -118,9 +107,7 @@ class SignUpForm(auth_forms.UserCreationForm):
 
     class Meta:
         model = models.User
-        fields = ('username', 'email', 'first_name', 'last_name', 'short_info', 'avatar',
-            'num_accompanying_children', 'age_accompanying_children', 'twitter', 'website',
-            'organisation', 'display_name', 'addressed_as', 'accept_job_offers', 'tags')
+        fields = ('username', 'email', 'first_name', 'last_name')
 
 
 class ReviewerApplicationForm(forms.Form):
