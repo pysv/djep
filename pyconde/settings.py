@@ -463,6 +463,8 @@ class Base(Configuration):
         },
     }
 
+    ACCOUNTS_FALLBACK_TO_GRAVATAR = True
+
 
 class Dev(Base):
     """
