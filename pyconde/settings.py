@@ -386,7 +386,7 @@ class Base(Configuration):
     #
     LOGIN_ERROR_URL = '/accounts/login/'
 
-    LOGIN_REDIRECT_URL = '/accounts/welcome/'
+    LOGIN_REDIRECT_URL = '/accounts/profile/'
 
     LOGOUT_REDIRECT_URL = '/'
 
