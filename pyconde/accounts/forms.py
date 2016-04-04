@@ -7,12 +7,12 @@ from django.contrib.auth import forms as auth_forms
 from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, ButtonHolder, Fieldset, Field, HTML
+from crispy_forms.layout import Layout, ButtonHolder, Fieldset, Field, HTML, Div
 
 from ..conference.models import current_conference
 from ..forms import Submit
 
-from . import validators
+from . import validators, models
 from .utils import get_full_name, SEND_MAIL_CHOICES
 
 
@@ -49,37 +49,51 @@ class SignUpForm(auth_forms.UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
+        self.fields['password1'] = forms.CharField(
+            label=_("Password"),
+            widget=forms.PasswordInput()
+        )
+        self.fields['password2'] = forms.CharField(
+            label=_("Password (again)"),
+            widget=forms.PasswordInput(),
+            help_text=_('Please repeat your password.'),
+        )
         account_fields = Fieldset(
             _('Login information'),
-            Field('username', autofocus="autofocus"),
-            'email',
-            'password',
-            'password_repeat'
+            Div(Field('username', autofocus="autofocus"), css_class="col-md-12"),
+            Div('email', css_class="col-md-12"),
+            Div('password1', css_class="col-md-12"),
+            Div('password2', css_class="col-md-12"),
+            css_class="row"
         )
         profile_fields = Fieldset(
             _('Personal information'),
-            'full_name',
-            'display_name',
-            'addressed_as',
-            'avatar',
-            'short_info'
+            Div('first_name', css_class="col-md-12"),
+            Div('last_name', css_class="col-md-12"),
+            Div('short_info', css_class="col-md-12"),
+            Div('avatar', css_class="col-md-12"),
+            Div('display_name', css_class="col-md-12"),
+            Div('addressed_as', css_class="col-md-12"),
+            Div('num_accompanying_children', css_class="col-md-12"),
+            Div('age_accompanying_children', css_class="col-md-12"),
+            css_class="row"
         )
         profession_fields = Fieldset(
             _('Professional information'),
-            'organisation',
-            'twitter',
-            'website',
-            Field('tags', css_class='tags-input'),
-            'accept_job_offers'
+            Div('organisation', css_class="col-md-12"),
+            Div('twitter', css_class="col-md-12"),
+            Div('website', css_class="col-md-12"),
+            Div(Field('tags', css_class='tags-input'), css_class="col-md-12"),
+            Div('accept_job_offers', css_class="col-md-12"),
+            css_class="row"
         )
         privacy_fields = Fieldset(
             _('Privacy Policy'),
-            HTML(_('{% load cms_tags %}<p class="control-group">Due to data protection '
-                   'regulations you need to explicitly accept our '
-                   '<a href="{% page_url "privacy-policy" %}">privacy policy</a>.</p>')),
-            'accept_privacy_policy',
-            'accept_pysv_conferences',
-            'accept_ep_conferences'
+            #HTML(_('{% load cms_tags %}<p class="control-group">Due to data protection '
+            #       'regulations you need to explicitly accept our '
+            #       '<a href="{% page_url "privacy-policy" %}">privacy policy</a>.</p>')),
+            Div('accept_privacy_policy', css_class="col-md-12"),
+            css_class="row"
         )
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
@@ -101,6 +115,12 @@ class SignUpForm(auth_forms.UserCreationForm):
         value = value.lstrip('@')
         validators.twitter_username(value)  # validates the max_length
         return value
+
+    class Meta:
+        model = models.User
+        fields = ('username', 'email', 'first_name', 'last_name', 'short_info', 'avatar',
+            'num_accompanying_children', 'age_accompanying_children', 'twitter', 'website',
+            'organisation', 'display_name', 'addressed_as', 'accept_job_offers', 'tags')
 
 
 class ReviewerApplicationForm(forms.Form):
