@@ -122,11 +122,11 @@ class TicketTypeManager(models.Manager):
 
     def filter_ondesk(self):
         vt_ct = content_models.ContentType.objects.get_for_model(VenueTicket)
-        return self.get_query_set().filter(is_on_desk_active=True,
-                                           content_type=vt_ct,
-                                           date_valid_from__lte=now(),
-                                           date_valid_to__gte=now(),
-                                           )
+        return self.get_queryset().filter(is_on_desk_active=True,
+                                          content_type=vt_ct,
+                                          date_valid_from__lte=now(),
+                                          date_valid_to__gte=now(),
+                                          )
 
 
 class TicketType(models.Model):
@@ -365,8 +365,8 @@ class TShirtSize(models.Model):
 class TicketManager(models.Manager):
 
     def only_valid(self):
-        return self.get_query_set().filter(canceled=False,
-                                           purchase__state='payment_received')
+        return self.get_queryset().filter(canceled=False,
+                                          purchase__state='payment_received')
 
     def get_active_user_tickets(self, user):
         """
