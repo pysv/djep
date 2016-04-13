@@ -174,15 +174,9 @@ class Base(Configuration):
         },
     ]
 
-    #DATABASES = {
-    #    'default': dj_database_url.config(
-    #        default='postgres://djep:djep@localhost/djep',
-    #        env='DEFAULT_DATABASE_URL'
-    #    )
-    #}
     DATABASES = {
         'default': dj_database_url.config(
-            default='sqlite://///home/max/privat/development/djep/djep.db',
+            default='postgres://djep:djep@localhost/djep',
             env='DEFAULT_DATABASE_URL'
         )
     }
