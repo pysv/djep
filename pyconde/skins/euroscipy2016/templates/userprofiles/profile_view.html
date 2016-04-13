@@ -68,9 +68,18 @@
     </div>
   </div>
 
+  {% if request.user == object %}
   <div class="col-md-3">
-    <a href="{% url 'account_profile_update' %}" class="btn btn-primary">{% trans "Update Account" %}</a>
+    <ul class="nav nav-pills nav-stacked">
+      <li>
+        <a href="{% url 'account_profile_update' %}" class="btn btn-primary">{% trans "Update Account" %}</a>
+      </li>
+      <li>
+        <a href="{% url 'my_proposals' %}" class="btn btn-primary">{% trans "My proposals"%}</a>
+      </li>
+    </ul>
   </div>
+  {% endif %}
 </div>
 
 {% endblock %}
