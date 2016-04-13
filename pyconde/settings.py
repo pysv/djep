@@ -61,7 +61,7 @@ class Base(Configuration):
     CONFERENCE_ID = values.IntegerValue(1)
 
     LANGUAGES = (
-        ('de', ugettext('German')),
+        #('de', ugettext('German')),
         ('en', ugettext('English')),
     )
     INTERNAL_IPS = ('127.0.0.1',)
@@ -558,6 +558,8 @@ class Staging(Base):
 
 
 class Production(Base):
+    pass
+
 #    INSTALLED_APPS = Base.INSTALLED_APPS + [
 #        'raven.contrib.django.raven_compat',
 #    ]
