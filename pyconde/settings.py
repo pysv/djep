@@ -174,9 +174,15 @@ class Base(Configuration):
         },
     ]
 
+    #DATABASES = {
+    #    'default': dj_database_url.config(
+    #        default='postgres://djep:djep@localhost/djep',
+    #        env='DEFAULT_DATABASE_URL'
+    #    )
+    #}
     DATABASES = {
         'default': dj_database_url.config(
-            default='postgres://djep:djep@localhost/djep',
+            default='sqlite://///home/max/privat/development/djep/djep.db',
             env='DEFAULT_DATABASE_URL'
         )
     }
@@ -552,7 +558,7 @@ class Staging(Base):
 
 
 class Production(Base):
-    INSTALLED_APPS = Base.INSTALLED_APPS + [
-        'raven.contrib.django.raven_compat',
-    ]
-    RAVEN_CONFIG = values.DictValue()
+#    INSTALLED_APPS = Base.INSTALLED_APPS + [
+#        'raven.contrib.django.raven_compat',
+#    ]
+#    RAVEN_CONFIG = values.DictValue()
