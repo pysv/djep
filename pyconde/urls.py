@@ -8,7 +8,24 @@ from django.contrib import admin
 admin.autodiscover()
 
 
-urlpatterns = i18n_patterns('',
+#urlpatterns = i18n_patterns('',
+#    url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', {
+#        'packages': ('pyconde.core',)
+#        }),
+#    url(r'^admin/', include(admin.site.urls)),
+#    url(r'^tickets/', include('pyconde.attendees.urls')),
+#    url(r'^accounts/', include('allauth.urls')),
+#    url(r'^accounts/', include('pyconde.accounts.urls')),
+#    url(r'^reviews/', include('pyconde.reviews.urls')),
+#    url(r'^schedule/', include('pyconde.schedule.urls')),
+#    url(r'^proposals/', include('pyconde.proposals.urls')),
+#    url(r'^search/', include('pyconde.search.urls')),
+#    url(r'^sponsorship/', include('pyconde.sponsorship.urls')),
+#    url(r'^checkin/', include('pyconde.checkin.urls')),
+#    url(r'^', include('cms.urls')),
+#)
+
+urlpatterns = patterns('',
     url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', {
         'packages': ('pyconde.core',)
         }),
