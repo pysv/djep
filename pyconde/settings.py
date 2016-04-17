@@ -73,7 +73,7 @@ class Base(Configuration):
 
     ROOT_URLCONF = values.Value('%s.urls' % PROJECT_NAME)
 
-    FORCE_SCRIPT_NAME = values.Value()
+    SCRIPT_NAME = values.Value()
 
     INSTALLED_APPS = [
         # Skins
