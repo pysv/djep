@@ -73,6 +73,8 @@ class Base(Configuration):
 
     ROOT_URLCONF = '%s.urls' % PROJECT_NAME
 
+    FORCE_SCRIPT_NAME = values.Value()
+
     INSTALLED_APPS = [
         # Skins
         # 'pyconde.skins.ep14',
@@ -276,11 +278,11 @@ class Base(Configuration):
                 'name': ugettext('English'),
                 'public': True,
             },
-            {
-                'code': 'de',
-                'name': ugettext('German'),
-                'public': True,
-            },
+            #{
+            #    'code': 'de',
+            #    'name': ugettext('German'),
+            #    'public': True,
+            #},
         ],
         'default': {
             'fallbacks': ['en', 'de'],
