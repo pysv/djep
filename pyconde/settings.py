@@ -40,8 +40,8 @@ class Base(Configuration):
     EMAIL_PORT = values.Value()
     EMAIL_HOST_USER = values.Value()
     EMAIL_HOST_PASSWORD = values.Value()
-    EMAIL_USE_TLS = values.Value()
-    EMAIL_USE_SSL = values.Value()
+    EMAIL_USE_TLS = values.BooleanValue(True)
+    EMAIL_USE_SSL = values.BooleanValue(False)
 
     DEFAULT_FROM_EMAIL = values.EmailValue('info@euroscipy.org')
 
