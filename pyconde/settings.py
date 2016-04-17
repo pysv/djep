@@ -71,7 +71,7 @@ class Base(Configuration):
     )
     INTERNAL_IPS = ('127.0.0.1',)
 
-    ROOT_URLCONF = '%s.urls' % PROJECT_NAME
+    ROOT_URLCONF = values.Value('%s.urls' % PROJECT_NAME)
 
     FORCE_SCRIPT_NAME = values.Value()
 
