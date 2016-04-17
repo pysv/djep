@@ -59,7 +59,7 @@ def sessions_by_tag(request, tag):
     """
     Lists all talks with a given tag on a single page.
     """
-    sessions = models.Session.objects.select_related('speaker__user__profile') \
+    sessions = models.Session.objects.select_related('speaker__user') \
                                      .prefetch_related('location') \
                                      .filter(released=True, tags__name=tag) \
                                      .order_by('title') \
@@ -79,7 +79,7 @@ def sessions_by_location(request, pk):
     Lists all talks with a given tag on a single page.
     """
     location = get_object_or_404(conference_models.Location, pk=pk)
-    sessions = models.Session.objects.select_related('speaker__user__profile') \
+    sessions = models.Session.objects.select_related('speaker__user') \
                                      .prefetch_related('location') \
                                      .filter(released=True, location=location) \
                                      .order_by('start') \
@@ -99,7 +99,7 @@ def sessions_by_kind(request, pk):
     Lists all talks with a given tag on a single page.
     """
     kind = get_object_or_404(conference_models.SessionKind, pk=pk)
-    sessions = models.Session.objects.select_related('speaker__user__profile') \
+    sessions = models.Session.objects.select_related('speaker__user') \
                                      .prefetch_related('location') \
                                      .filter(released=True, kind=kind) \
                                      .order_by('title') \
@@ -210,7 +210,7 @@ def list_user_attendances(request):
     This view lists all the sessions to which the current user has indicated
     that they would like to attend.
     """
-    sessions = request.user.profile.sessions_attending\
+    sessions = request.user.sessions_attending\
         .only('title', 'start', 'end')\
         .prefetch_related('location')\
         .order_by('start')\

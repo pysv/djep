@@ -26,4 +26,4 @@ class AccountsMenu(CMSAttachMenu):
             nodes.append(NavigationNode(_("Logout"), reverse('auth_logout'), 'account-logout'))
         return nodes
 
-menu_pool.register_menu(AccountsMenu)
+#menu_pool.register_menu(AccountsMenu)

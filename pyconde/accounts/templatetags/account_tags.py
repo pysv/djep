@@ -31,19 +31,10 @@ def avatar(user, width=80):
     the settings.
     """
     if user is None:
-        raise ValueError("A user or profile has to be passed as argument")
-    profile = None
-    email = None
-    if isinstance(user, models.Profile):
-        profile = user
-        email = profile.user.email
-    else:
-        profile = user.profile
-        email = user.email
+        raise ValueError("A user has to be passed as argument")
     return {
-        'profile': profile,
         'use_gravatar': getattr(settings, 'ACCOUNTS_FALLBACK_TO_GRAVATAR', False),
-        'email': email,
+        'email': user.email,
         'width': width,
         'avatar_dimensions': '%sx%s' % (width, width),
     }

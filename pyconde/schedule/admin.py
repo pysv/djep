@@ -104,8 +104,8 @@ class SessionAdmin(admin.ModelAdmin):
     list_filter = ("conference", "kind", "duration", "track", "location",
                    HasSelectedTimeslotsFilter)
     date_hierarchy = 'start'
-    search_fields = ['title', 'speaker__user__profile__display_name',
-                     'speaker__user__profile__full_name', 'description',
+    search_fields = ['title', 'speaker__user__display_name',
+                     'speaker__user__full_name', 'description',
                      'abstract']
     actions = [create_simple_session_export, episodes_export]
     form = SessionAdminForm
@@ -115,22 +115,22 @@ class SessionAdmin(admin.ModelAdmin):
         view = getattr(self, 'view', None)
         if view == 'list':
             qs = qs.select_related('conference', 'kind', 'duration', 'track',
-                                   'speaker__user__profile') \
+                                   'speaker__user') \
                    .prefetch_related('available_timeslots', 'location') \
                    .only('title',
                          'kind__name',
                          'conference__title',
                          'duration__label', 'duration__minutes',
-                         'speaker__user__profile__display_name',
-                         'speaker__user__profile__full_name',
-                         'speaker__user__profile__user',
+                         'speaker__user__display_name',
+                         'speaker__user__full_name',
+                         'speaker__user__user',
                          'speaker__user__username',
                          'track__name',
                          'location__name')
         elif view == 'form':
             qs = qs.select_related(
                 'conference', 'kind', 'duration', 'track', 'location',
-                'speaker__user__profile', 'additional_speakers__user__profile',
+                'speaker__user', 'additional_speakers__user',
                 'available_timeslots'
             )
         return qs

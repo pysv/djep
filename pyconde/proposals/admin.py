@@ -5,6 +5,7 @@ from ..speakers import models as speaker_models
 
 from . import models
 
+
 class ProposalAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -29,21 +30,17 @@ class ProposalAdmin(admin.ModelAdmin):
         view = getattr(self, 'view', None)
         if view == 'list':
             qs = qs.select_related(
-                'conference', 'kind', 'duration', 'track',
-                'speaker__user__profile') \
-            .only('title',
-                  'kind__name',
-                  'conference__title',
-                  'duration__label', 'duration__minutes',
-                  'speaker__user__profile__display_name',
-                  'speaker__user__profile__full_name',
-                  'speaker__user__profile__user',
-                  'speaker__user__username',
-                  'track__name')
+                'conference', 'kind', 'duration', 'track', 'speaker__user'
+            ).only(
+                'title', 'kind__name', 'conference__title', 'duration__label',
+                'duration__minutes', 'speaker__user__display_name',
+                'speaker__user__full_name', 'speaker__user__user',
+                'speaker__user__username', 'track__name'
+            )
         elif view == 'form':
             qs = qs.select_related(
                 'conference', 'kind', 'duration', 'track', 'location',
-                'speaker__user__profile', 'additional_speakers__user__profile',
+                'speaker__user', 'additional_speakers__user',
                 'available_timeslots'
             )
         return qs

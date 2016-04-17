@@ -1,0 +1,135 @@
+html, body {
+    min-height:100%;
+    overflow-x: hidden;
+}
+
+.main-nav * {
+    color: #FFFFFF!important;
+    background-color: #005db8!important;
+    border: none!important;
+}
+
+.navbar {
+    border-radius: 0;
+    height: 38px;
+    z-index: 2;
+}
+
+.navbar .nav li {
+    height: 38px;
+    font-size: 120%;
+}
+
+.language-link {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 90%;
+    color: #005db8!important;
+    background-color: #F3F8F9!important;
+    padding: 3px!important;
+    text-align: center;
+}
+.language-link.active {
+    color: #FFF!important;
+    border-radius: 15px!important;
+    background-color: #005db8!important;
+}
+.language {
+    height: auto!important;
+    padding: 1px!important;
+    margin-top: 12px;
+    background-color: #F3F8F9!important;
+    width: 35px;
+    float: left;
+}
+.language:first-child {
+    padding-left: 2px!important;
+    margin-left: 1em;
+}
+.language:first-child, .language-link:first-child {
+    -webkit-border-top-left-radius: 15px!important;
+    -webkit-border-bottom-left-radius: 15px!important;
+    -moz-border-radius-topleft: 15px!important;
+    -moz-border-radius-bottomleft: 15px!important;
+    border-top-left-radius: 15px!important;
+    border-bottom-left-radius: 15px!important;
+}
+.language:last-child {
+    padding-right: 2px!important;
+    margin-right: 1em;
+}
+.language:last-child, .language-link:last-child {
+    -webkit-border-top-right-radius: 15px!important;
+    -webkit-border-bottom-right-radius: 15px!important;
+    -moz-border-radius-topright: 15px!important;
+    -moz-border-radius-bottomright: 15px!important;
+    border-top-right-radius: 15px!important;
+    border-bottom-right-radius: 15px!important;
+}
+
+.navbar .nav li a {
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+header {
+    background-color: #F3F8F9;
+    min-height: 180px;
+}
+
+.top-bar {
+    padding-bottom: 1.5em;
+    padding-left: 0;
+}
+
+.logo {
+    z-index: 5;
+}
+
+footer {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    color: #FFFFFF;
+    background-color: #6B7A81;
+    width: 100%;
+    min-height: 250px;
+    clear:both;
+}
+
+footer a {
+    color: #FFFFFF;
+}
+
+footer a:hover {
+    text-decoration: none;
+    color: #005DB8;
+}
+
+footer ul {
+    list-style-type: none;
+    padding-left: 0;
+    font-size: 120%;
+}
+
+.twitter .fa-inverse {
+    color: #6B7A81;
+}
+
+.twitter .fa-inverse:hover {
+    color: #FFFFFF;
+}
+
+#github, #footer-social {
+    text-align: right;
+}
+
+.spacer {
+    height: 40px;
+}
+
+.gravatar {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}

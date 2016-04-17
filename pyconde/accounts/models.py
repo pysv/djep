@@ -86,7 +86,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         validators=[validators.twitter_username])
     website = models.URLField(_("Website"), blank=True)
     organisation = models.TextField(_('Organisation'), blank=True)
-    full_name = models.CharField(_("Full name"), max_length=255, blank=True)
     display_name = models.CharField(_("Display name"), max_length=255,
         help_text=_('What name should be displayed to other people?'),
         blank=True)
@@ -101,7 +100,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=False, blank=True)
 
     badge_status = models.ManyToManyField('accounts.BadgeStatus', blank=True,
-        verbose_name=_('Badge status'), related_name='profiles')
+        verbose_name=_('Badge status'), related_name='users')
 
     sessions_attending = models.ManyToManyField('schedule.Session', blank=True,
         related_name='attendees', verbose_name=_('Trainings'),
@@ -112,7 +111,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['email']
 
     class Meta:
         verbose_name = _("User")
@@ -145,6 +144,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.first_name and self.last_name:
             short_name = '{}. {}'.format(self.first_name[0], self.last_name)
         return short_name
+
+    def get_display_name(self):
+        """Return either the display_name for get_full_name of the user."""
+        return self.display_name or self.get_full_name()
 
     def signup(self, first_name, last_name, commit=True):
         """Update the fields required for sign-up and accept the terms and conditions."""

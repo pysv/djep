@@ -1,0 +1,10 @@
+{
+  "name": "euroscipy2016",
+  "version": "0.0.1",
+  "private": "true",
+  "dependencies": {
+    "bootstrap": "~3.3.6",
+    "font-awesome": "~4.0.3",
+    "spin.js": "spinjs#~2.3.2"
+  }
+}

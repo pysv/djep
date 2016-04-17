@@ -106,7 +106,7 @@ class BadgeExporter(object):
         from ..schedule.models import Session
 
         result = []
-        sessions = Session.objects.select_related('speaker_id', 'kind') \
+        sessions = Session.objects.select_related('speaker', 'kind') \
                                   .prefetch_related('additional_speakers') \
                                   .all()
         speaker_involvements = defaultdict(set)
@@ -120,21 +120,11 @@ class BadgeExporter(object):
             in enumerate(all_trainings, 1)
         }
         for session in sessions:
-            speaker_involvements[session.speaker_id].add(session.kind.slug)
+            speaker_involvements[session.speaker.pk].add(session.kind.slug)
             for add_s in session.additional_speakers.all():
                 speaker_involvements[add_s.id].add(session.kind.slug)
 
-        for ticket in tickets.select_related('purchase',
-                                             'sponsor',
-                                             'user__profile__sponsor__level',
-                                             'user__speaker_profile',
-                                             'shirtsize',
-                                             'ticket_type') \
-                             .prefetch_related('user__profile__tags',
-                                               'user__profile__badge_status',
-                                               'user__profile__sessions_attending') \
-                             .order_by('last_name',
-                                       'first_name'):
+        for ticket in tickets.order_by('last_name', 'first_name'):
             if not isinstance(ticket, VenueTicket):
                 LOG.warn('Ticket %d is of type %s. Skipping' % (
                     ticket.pk, ticket.__class__.__name__))
@@ -145,15 +135,13 @@ class BadgeExporter(object):
                     ticket.__class__.__name__, ticket.pk, purchase.full_invoice_number, purchase.id))
                 continue
             user = ticket.user
-            profile = None if user is None else user.profile
             badge = {
                 'id': ticket.id,
                 'uid': user and user.id or None,
                 'name': '%s %s' % (ticket.first_name, ticket.last_name),
-                'organization': ticket.organisation or purchase.company_name or profile and profile.organisation or None,
+                'organization': ticket.organisation or purchase.company_name or user and user.organisation or None,
                 'tshirt': ticket.shirtsize_id and ticket.shirtsize.size or None,
                 'tags': None,  # set below
-                'profile': self._user_url(user),
                 'sponsor': None,  # set below
                 'days': None,  # Only whole-conference tickets are sold online
                 'status': None,  # set below
@@ -177,8 +165,8 @@ class BadgeExporter(object):
                 }
                 status_keys.add('sponsor')
 
-            if profile:
-                status_keys |= set(profile.badge_status.values_list('slug', flat=True).all())
+            if user:
+                status_keys |= set(user.badge_status.values_list('slug', flat=True).all())
 
                 speaker = user.speaker_profile
                 if 'talk' in speaker_involvements[speaker.id]:
@@ -188,19 +176,18 @@ class BadgeExporter(object):
                 if 'keynote' in speaker_involvements[speaker.id]:
                     status_keys.add('keynote')
 
-                tags = [t.name for t in profile.tags.all()]
+                tags = [t.name for t in user.tags.all()]
                 if tags:
                     badge['tags'] = tags
 
-                trainings = profile.sessions_attending\
-                        .filter(kind__slug='training').all()
+                trainings = user.sessions_attending.filter(kind__slug='training').all()
                 if trainings:
                     attendings = defaultdict(list)
                     for t in trainings:
                         index, start = trainings_pk_index[t.id]
                         attendings[start].append(index)
                     badge['trainings'] = attendings
-
+            from pdb import set_trace; set_trace()
             if status_keys:
                 badge['status'] = list(status_keys)
 

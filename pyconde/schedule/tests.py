@@ -188,7 +188,7 @@ class AttendSessionTest(TestCase):
         now = datetime.datetime.utcnow()
         self.attendees = [User.objects.create_user(username='att%d' % i, password='att%d' % i) for i in range(1, 4)]
         for i in range(3):
-            account_models.Profile.objects.create(user=self.attendees[i])
+            account_models.User.objects.create(user=self.attendees[i])
 
         self.training = models.Session.objects.get(title='Training 15')
         self.training2 = models.Session.objects.get(title='Training 16')
@@ -285,7 +285,7 @@ class AttendSessionTest(TestCase):
         self.client.logout()
 
     def test_leave(self):
-        self.training.attendees.add(self.attendees[0].profile)
+        self.training.attendees.add(self.attendees[0])
         att_ids = list(self.training.attendees.order_by('id').values_list('id', flat=True).all())
         self.assertEqual(att_ids, [self.attendees[0].pk])
 

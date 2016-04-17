@@ -23,12 +23,12 @@ class WithChildrenFilter(SimpleListFilter):
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'full_name', 'is_staff', 'is_superuser',
+    list_display = ('email', 'is_staff', 'is_superuser',
         'is_reviewer', 'is_active', 'twitter', 'date_joined', 'organisation',
         'accept_pysv_conferences', 'accept_ep_conferences')
     list_filter = (WithChildrenFilter, 'accept_pysv_conferences',
                    'accept_ep_conferences')
-    search_fields = ('email', 'full_name', 'twitter', 'organisation')
+    search_fields = ('email', 'twitter', 'organisation')
 
     def is_reviewer(self, instance):
         from pyconde.reviews import utils

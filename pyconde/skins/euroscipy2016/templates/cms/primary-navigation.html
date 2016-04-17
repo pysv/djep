@@ -1,0 +1,94 @@
+{% load menu_tags i18n static %}
+
+<nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#euroscipy-nav" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <i class="fa fa-align-justify"></i>
+      </button>
+      <a class="navbar-brand" href="/">EuroSciPy 2016</a>
+    </div>
+    <div id="euroscipy-nav" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        {% for child in children %}
+        <li class="{% if child.children %}dropdown{% endif %} {% if child.selected or child.ancestor %} active{% endif %}">
+          <a {% if child.children %}class="dropdown-toggle" data-toggle="dropdown"{% endif %}
+              href="{{ child.attr.redirect_url|default:child.get_absolute_url}}">
+            {{ child.get_menu_title }} {% if child.children %} <i class="fa fa-caret-down"></i>{% endif %}
+          </a>
+          {% if child.children %}
+          <ul class="dropdown-menu">
+            {% for child in child.children %}
+            <li class="{% if child.children %}has-dropdown{% endif %} {% if child.selected or child.ancestor %} active{% endif %}">
+              <a href="{{ child.attr.redirect_url|default:child.get_absolute_url }}">
+                {{ child.get_menu_title }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+
+      {% language_chooser "cms/language_chooser.html" %}
+
+      <ul class="nav navbar-nav navbar-right">
+        {% if user.is_authenticated %}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            {{ user.get_display_name }} <i class="fa fa-caret-down"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="{% url 'account_profile_self' %}">
+                {% trans "Account" %}
+              </a>
+            </li>
+
+            {% if user.is_staff or perms.accounts.send_user_mails or perms.sponsorship.add_joboffer or perms.accounts.see_checkin_info %}
+            {% if user.is_staff %}
+            <li>
+              <a href="{% url "admin:index" %}">
+                Django Admin
+              </a>
+            </li>
+            {% endif %}
+            {% if perms.accounts.send_user_mails %}
+            <li>
+              <a href="{% url "account_sendmail" %}">
+                {% trans "Send mail" %}
+              </a>
+            </li>
+            {% endif %}
+            {% if perms.sponsorship.add_joboffer %}
+              {% show_menu_below_id "sponsorship" %}
+            {% endif %}
+            {% if perms.accounts.see_checkin_info %}
+            <li>
+              <a href="{% url "checkin_search" %}">
+                {% trans "Handle check-in"%}
+              </a>
+            </li>
+            {% endif %}
+            {% endif %}
+            <li>
+              <a href="{% url 'auth_logout' %}">
+                {% trans "Logout" %}
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% else %}
+        <li>
+          <a href="{% url 'account_login' %}">{% trans "Login" %}</a>
+        </li>
+        <li>
+          <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</nav>

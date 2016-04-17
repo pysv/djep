@@ -82,9 +82,9 @@ def create_section_schedule(section, row_duration=30, uncached=False):
     sessions = sessions.select_related('audience_level',
                                        'track',
                                        'kind',
-                                       'speaker__user__profile',
+                                       'speaker__user',
                                        'conference') \
-                       .prefetch_related('additional_speakers__user__profile',
+                       .prefetch_related('additional_speakers__user',
                                          'location') \
                        .filter(released=True, start__isnull=False, end__isnull=False) \
                        .order_by('start') \

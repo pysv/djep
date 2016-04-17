@@ -9,7 +9,6 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils.timezone import now
 
-from ..accounts.models import Profile
 from ..attendees.models import Purchase, TicketType, VenueTicket
 
 
@@ -28,7 +27,6 @@ class ViewTests(TestCase):
     def _create_user(self, permissions=False):
         user = User.objects.create_user(username='user', password='password')
         if permissions:
-            Profile.objects.create(user=user)
             permission = Permission.objects.get(codename='see_checkin_info')
             user.user_permissions.add(permission)
             permission = Permission.objects.get(codename='perform_purchase')

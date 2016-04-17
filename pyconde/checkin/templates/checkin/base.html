@@ -5,5 +5,6 @@
     {% if perms.accounts.perform_purchase %}
       <a class="btn btn-primary checkin-purchase-button" href="{% url 'checkin_purchase' %}">{% trans "On-Desk Purchase" %}</a>
     {% endif %}
+    <div class="spacer"></div>
     {% crispy search_form %}
 {% endblock %}

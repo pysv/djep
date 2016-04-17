@@ -38,11 +38,11 @@ class Base(Configuration):
 
     EMAIL_HOST = values.Value()
 
-    DEFAULT_FROM_EMAIL = values.EmailValue('noreply@ep14.org')
+    DEFAULT_FROM_EMAIL = values.EmailValue('info@euroscipy.org')
 
-    SERVER_EMAIL = values.EmailValue('noreply@ep14.org')
+    SERVER_EMAIL = values.EmailValue('info@euroscipy.org')
 
-    SUPPORT_EMAIL = values.EmailValue('helpdesk@europython.eu')
+    SUPPORT_EMAIL = values.EmailValue('info@euroscipy.org')
 
     TIME_ZONE = 'Europe/Berlin'
 
@@ -50,7 +50,7 @@ class Base(Configuration):
 
     SECRET_KEY = values.SecretValue()
 
-    EMAIL_SUBJECT_PREFIX = values.Value('[EuroPython 2014] ')
+    EMAIL_SUBJECT_PREFIX = values.Value('[EuroSciPy 2016] ')
 
     USE_I18N = True
 
@@ -61,7 +61,7 @@ class Base(Configuration):
     CONFERENCE_ID = values.IntegerValue(1)
 
     LANGUAGES = (
-        ('de', ugettext('German')),
+        #('de', ugettext('German')),
         ('en', ugettext('English')),
     )
     INTERNAL_IPS = ('127.0.0.1',)
@@ -71,7 +71,8 @@ class Base(Configuration):
     INSTALLED_APPS = [
         # Skins
         # 'pyconde.skins.ep14',
-        'pyconde.skins.default',
+        # 'pyconde.skins.default',
+        'pyconde.skins.euroscipy2016',
         'djangocms_admin_style',
         'django.contrib.admin',
         'django.contrib.auth',
@@ -85,6 +86,7 @@ class Base(Configuration):
         # django allauth for account creation and managing
         'allauth',
         'allauth.account',
+        'allauth.socialaccount',
 
         'sortedm2m',
         'crispy_forms',
@@ -103,7 +105,7 @@ class Base(Configuration):
         'sekizai',
         'taggit',
         'haystack',
-        #'tinymce', # If you want tinymce, add it in the settings.py file.
+        'tinymce',  # If you want tinymce, add it in the settings.py file.
         'django_gravatar',
         'gunicorn',
         'statici18n',
@@ -322,7 +324,7 @@ class Base(Configuration):
 
     ###########################################################################
     #
-    # Account and profile settings
+    # Account settings
     #
     AVATAR_MIN_DIMENSION = values.TupleValue(converter=int)
     AVATAR_MAX_DIMENSION = values.TupleValue(converter=int)
@@ -384,7 +386,7 @@ class Base(Configuration):
     #
     LOGIN_ERROR_URL = '/accounts/login/'
 
-    LOGIN_REDIRECT_URL = '/accounts/welcome/'
+    LOGIN_REDIRECT_URL = '/accounts/profile/'
 
     LOGOUT_REDIRECT_URL = '/'
 
@@ -392,7 +394,7 @@ class Base(Configuration):
     #
     # allauth settings
     #
-    ACCOUNT_AUTHENTICATION_METHOD = 'email'
+    ACCOUNT_AUTHENTICATION_METHOD = 'username'
     ACCOUNT_EMAIL_REQUIRED = True
     ACCOUNT_EMAIL_VERIFICATION = values.Value('mandatory')
     ACCOUNT_EMAIL_SUBJECT_PREFIX = EMAIL_SUBJECT_PREFIX
@@ -454,6 +456,14 @@ class Base(Configuration):
     STATICI18N_OUTPUT_DIR = 'jsi18n'
     STATICI18N_DOMAIN = 'djangojs'
     STATICI18N_FILENAME_FUNCTION = 'statici18n.utils.default_filename'
+
+    THUMBNAIL_ALIASES = {
+        '': {
+            'avatar': {'size': (300, 300), 'crop': True},
+        },
+    }
+
+    ACCOUNTS_FALLBACK_TO_GRAVATAR = True
 
 
 class Dev(Base):
@@ -542,7 +552,9 @@ class Staging(Base):
 
 
 class Production(Base):
-    INSTALLED_APPS = Base.INSTALLED_APPS + [
-        'raven.contrib.django.raven_compat',
-    ]
-    RAVEN_CONFIG = values.DictValue()
+    pass
+
+#    INSTALLED_APPS = Base.INSTALLED_APPS + [
+#        'raven.contrib.django.raven_compat',
+#    ]
+#    RAVEN_CONFIG = values.DictValue()

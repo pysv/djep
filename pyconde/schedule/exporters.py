@@ -114,8 +114,8 @@ class GuidebookExporterSessions(object):
         result = []
         sessions = models.Session.objects \
             .select_related('kind', 'audience_level', 'track',
-                            'speaker__user__profile') \
-            .prefetch_related('additional_speakers__user__profile',
+                            'speaker__user') \
+            .prefetch_related('additional_speakers__user',
                               'location') \
             .filter(released=True, start__isnull=False, end__isnull=False) \
             .exclude(kind__slug__in=('poster')) \
@@ -125,11 +125,11 @@ class GuidebookExporterSessions(object):
                   'audience_level__name',
                   'track__name',
                   'speaker__user__username',
-                  'speaker__user__profile__avatar',
-                  'speaker__user__profile__full_name',
-                  'speaker__user__profile__display_name',
-                  'speaker__user__profile__short_info',
-                  'speaker__user__profile__user') \
+                  'speaker__user__avatar',
+                  'speaker__user__full_name',
+                  'speaker__user__display_name',
+                  'speaker__user__short_info',
+                  'speaker__user__user') \
             .all()
         for session in sessions:
             additional_speakers = list(session.additional_speakers.all())
@@ -206,23 +206,23 @@ class GuidebookExporterSpeakers(object):
             'Description (Optional)', 'Location/Room'])
         speakers = set()
         sessions = models.Session.objects \
-            .select_related('speaker__user__profile') \
-            .prefetch_related('additional_speakers__user__profile') \
+            .select_related('speaker__user') \
+            .prefetch_related('additional_speakers__user') \
             .filter(released=True, start__isnull=False, end__isnull=False) \
             .exclude(kind__slug__in=('poster')) \
             .only('speaker__user__username',
-                  'speaker__user__profile__avatar',
-                  'speaker__user__profile__full_name',
-                  'speaker__user__profile__display_name',
-                  'speaker__user__profile__short_info',
-                  'speaker__user__profile__user') \
+                  'speaker__user__avatar',
+                  'speaker__user__full_name',
+                  'speaker__user__display_name',
+                  'speaker__user__short_info',
+                  'speaker__user__user') \
             .all()
         for session in sessions:
             user = session.speaker.user
-            speakers.add((get_full_name(user), user.profile.short_info_rendered))
+            speakers.add((get_full_name(user), user.short_info_rendered))
             for speaker in session.additional_speakers.all():
                 user = speaker.user
-                speakers.add((get_full_name(user), user.profile.short_info_rendered))
+                speakers.add((get_full_name(user), user.short_info_rendered))
 
         speakers = sorted(speakers)
         for speaker in speakers:
@@ -242,17 +242,17 @@ class GuidebookExporterLinks(object):
             'Link To Session Name (Optional)', 'Link To Item ID (Optional)',
             'Link To Item Name (Optional)', 'Link To Form Name (Optional)'])
         sessions = models.Session.objects \
-            .select_related('kind', 'speaker__user__profile') \
-            .prefetch_related('additional_speakers__user__profile') \
+            .select_related('kind', 'speaker__user') \
+            .prefetch_related('additional_speakers__user') \
             .filter(released=True, start__isnull=False, end__isnull=False) \
             .exclude(kind__slug__in=('poster')) \
             .only('title',
                   'kind__slug',
                   'speaker__user__username',
-                  'speaker__user__profile__avatar',
-                  'speaker__user__profile__full_name',
-                  'speaker__user__profile__display_name',
-                  'speaker__user__profile__user') \
+                  'speaker__user__avatar',
+                  'speaker__user__full_name',
+                  'speaker__user__display_name',
+                  'speaker__user__user') \
             .all()
 
         for session in sessions:
@@ -363,8 +363,8 @@ class XMLExporter(object):
             with etree.xmlfile(fp) as xf:
                 sessions = models.Session.objects \
                     .select_related('kind', 'audience_level', 'track',
-                                    'speaker__user__profile') \
-                    .prefetch_related('additional_speakers__user__profile',
+                                    'speaker__user') \
+                    .prefetch_related('additional_speakers__user',
                                       'location') \
                     .filter(released=True, start__isnull=False, end__isnull=False) \
                     .order_by('start') \
@@ -373,11 +373,11 @@ class XMLExporter(object):
                           'audience_level__name',
                           'track__name',
                           'speaker__user__username',
-                          'speaker__user__profile__avatar',
-                          'speaker__user__profile__full_name',
-                          'speaker__user__profile__display_name',
-                          'speaker__user__profile__short_info',
-                          'speaker__user__profile__user') \
+                          'speaker__user__avatar',
+                          'speaker__user__full_name',
+                          'speaker__user__display_name',
+                          'speaker__user__short_info',
+                          'speaker__user__user') \
                     .all()
                 side_events = models.SideEvent.objects \
                     .prefetch_related('location') \
@@ -481,7 +481,6 @@ class XMLExporter(object):
                 pass
 
     def _export_speaker(self, fp, xf, user):
-        profile = user.profile
         with xf.element('speaker', id=force_text(user.id)):
             with xf.element('name'):
                 name = get_full_name(user)
@@ -490,15 +489,16 @@ class XMLExporter(object):
                 xf.write(self.base_url + reverse('account_profile',
                                                  kwargs={'uid': user.id}), pretty_print=self.pretty)
             with xf.element('description'):
-                xf.write(user.profile.short_info, pretty_print=self.pretty)
+                xf.write(user.short_info, pretty_print=self.pretty)
             with xf.element('image'):
-                if profile.avatar:
-                    avatar_url = self.base_url + profile.avatar.url
+                if user.avatar:
+                    avatar_url = self.base_url + user.avatar.url
                     xf.write(avatar_url, pretty_print=self.pretty)
                 if self.export_avatars:
-                    filename, ext = os.path.splitext(profile.avatar.file.name)
+                    filename, ext = os.path.splitext(user.avatar.file.name)
                     dest = os.path.join(self.avatar_dir, str(user.id)) + ext
-                    shutil.copy(profile.avatar.file.name, dest)
+                    shutil.copy(user.avatar.file.name, dest)
+
 
 class XMLExporterPentabarf(object):
 
@@ -511,8 +511,8 @@ class XMLExporterPentabarf(object):
         with etree.xmlfile(output) as xf:
             sessions = models.Session.objects \
                 .select_related('kind', 'audience_level', 'track',
-                                'speaker__user__profile') \
-                .prefetch_related('additional_speakers__user__profile',
+                                'speaker__user') \
+                .prefetch_related('additional_speakers__user',
                                   'location') \
                 .filter(released=True, start__isnull=False, end__isnull=False,
                         kind__slug__in=('talk', 'keynote', 'sponsored')) \
@@ -522,11 +522,11 @@ class XMLExporterPentabarf(object):
                       'audience_level__name',
                       'track__name',
                       'speaker__user__username',
-                      'speaker__user__profile__avatar',
-                      'speaker__user__profile__full_name',
-                      'speaker__user__profile__display_name',
-                      'speaker__user__profile__short_info',
-                      'speaker__user__profile__user') \
+                      'speaker__user__avatar',
+                      'speaker__user__full_name',
+                      'speaker__user__display_name',
+                      'speaker__user__short_info',
+                      'speaker__user__user') \
                 .all()
             side_events = models.SideEvent.objects \
                 .select_related() \
@@ -687,8 +687,8 @@ class FrabExporter(object):
         sessions_in_location = collections.defaultdict(list)
         sessions = models.Session.objects\
             .select_related('kind', 'audience_level', 'track',
-                            'speaker__user__profile')\
-            .prefetch_related('additional_speakers__user__profile',
+                            'speaker__user')\
+            .prefetch_related('additional_speakers__user',
                               'location')\
             .filter(released=True, start__year=day.year, start__month=day.month, start__day=day.day, conference=conference)\
             .order_by('start')\

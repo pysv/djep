@@ -22,9 +22,8 @@ class DisplayNameFilterTests(TransactionTestCase):
         """
         If the user has specified a display name, it should be returned here.
         """
-        user = User(username="username")
+        user = User(username="username", display_name="Display Name")
         user.save()
-        profile = models.Profile(display_name="Display Name", user=user)
         self.assertEquals("Display Name", account_tags.display_name(user))
 
     def test_no_display_name_given(self):
@@ -32,10 +31,8 @@ class DisplayNameFilterTests(TransactionTestCase):
         If the user has not specified a display name, fallback to the
         userername.
         """
-        user = User(username="username")
+        user = User(username="username", display_name="")
         user.save()
-        profile = models.Profile(display_name="", user=user)
-        profile.save()
         self.assertEquals("username", account_tags.display_name(user))
 
 
@@ -44,17 +41,13 @@ class AddressedAsFilterTests(TransactionTestCase):
         self.assertIsNone(account_tags.addressed_as(None))
 
     def test_addressed_as_given(self):
-        user = User(username="username")
+        user = User(username="username", addressed_as="Addressed as")
         user.save()
-        profile = models.Profile(display_name="Display Name",
-            addressed_as="Addressed as", user=user)
         self.assertEquals("Addressed as", account_tags.addressed_as(user))
 
     def test_no_addressed_as_given(self):
-        user = User(username="username")
+        user = User(username="username", addressed_as="")
         user.save()
-        profile = models.Profile(addressed_as="", display_name="Display name", user=user)
-        profile.save()
         self.assertEquals("Display name", account_tags.addressed_as(user))
 
 
@@ -72,8 +65,6 @@ class AvatarTagTests(TransactionTestCase):
         expected = '''<img class="avatar gravatar" src="/static_media/assets/images/noavatar80.png" alt="" style="width: 80px; height: 80px"/>'''
         user = User.objects.create_user('testuser', 'test@test.com',
             password='test')
-        profile = models.Profile(user=user)
-        profile.save()
         with self.settings(ACCOUNTS_FALLBACK_TO_GRAVATAR=False):
             tmpl = template.Template(
                 '''{% load account_tags %}{% avatar user %}''')
@@ -84,36 +75,11 @@ class AvatarTagTests(TransactionTestCase):
         expected = '''<img class="avatar gravatar" src="/static_media/assets/images/noavatar80.png" alt="" style="width: 80px; height: 80px"/>'''
         user = User.objects.create_user('testuser', 'test@test.com',
             password='test')
-        profile = models.Profile(user=user)
-        profile.save()
         with self.settings(ACCOUNTS_FALLBACK_TO_GRAVATAR=False):
             tmpl = template.Template(
                 '''{% load account_tags %}{% avatar user %}''')
             self.assertEquals(expected,
-                tmpl.render(template.Context({'user': profile})).lstrip().rstrip())
-
-
-class ChangeProfileFormTests(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
-            'test', 'test@test.com', 'test')
-        self.profile = models.Profile(user=self.user)
-        self.profile.save()
-
-    def tearDown(self):
-        self.profile.delete()
-        self.user.delete()
-
-    def test_change_shortinfo(self):
-        """
-        If a user provides an updated short info text, it should be saved
-        through this form.
-        """
-        self.assertEquals('', self.profile.short_info)
-        form = forms.ProfileForm(instance=self.profile, data={'short_info': 'test'})
-        self.assertTrue(form.is_valid())
-        new_profile = form.save()
-        self.assertEquals('test', new_profile.short_info)
+                tmpl.render(template.Context({'user': user})).lstrip().rstrip())
 
 
 class AutocompleteUserViewTests(TestCase):
@@ -121,13 +87,9 @@ class AutocompleteUserViewTests(TestCase):
         self.user = User.objects.create_user(
             'test', 'test@test.com', 'test')
         self.user.save()
-        self.profile = models.Profile(user=self.user)
-        self.profile.display_name = "Firstname Lastname"
-        self.profile.save()
         self.view = views.AutocompleteUser()
 
     def tearDown(self):
-        self.profile.delete()
         self.user.delete()
 
     def test_response_format(self):
@@ -242,12 +204,9 @@ class ProfileRegistrationFormTests(TestCase):
 class AutocompleteTagsViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('test', password='test')
-        self.profile = models.Profile(user=self.user)
-        self.profile.save()
-        self.profile.tags.add('django')
+        self.user.tags.add('django')
 
     def tearDown(self):
-        self.profile.delete()
         self.user.delete()
 
     def test_400_on_no_term(self):

@@ -119,7 +119,7 @@ class Session(LocationMixin, proposal_models.AbstractProposal):
         return reverse('session', kwargs={'session_pk': self.pk})
 
     def can_attend(self, user):
-        other = Session.objects.filter(attendees=user.profile).exclude(id=self.pk)
+        other = Session.objects.filter(attendees=user).exclude(id=self.pk)
         q_overlap = (
             Q(start__range=(self.start, self.end)) |
             Q(end__range=(self.start, self.end))
@@ -129,7 +129,7 @@ class Session(LocationMixin, proposal_models.AbstractProposal):
 
     def is_attending(self, user):
         if user.pk:
-            return self.attendees.filter(id=user.profile.id).exists()
+            return self.attendees.filter(id=user.id).exists()
         return False
 
     def attend(self, user):
@@ -148,7 +148,7 @@ class Session(LocationMixin, proposal_models.AbstractProposal):
         elif not self.can_attend(user):
             raise AttendingError(_('You cannot attend this session because you are already attending another one at that time.'))
         else:
-            self.attendees.add(user.profile.id)
+            self.attendees.add(user.id)
 
     def leave(self, user):
         current_time = now()
@@ -158,7 +158,7 @@ class Session(LocationMixin, proposal_models.AbstractProposal):
             else:
                 raise AttendingError(_('You cannot leave this session anymore. The session already started.'))
         else:
-            self.attendees.remove(user.profile.id)
+            self.attendees.remove(user.id)
 
     def has_free_seats(self):
         if self.max_attendees in (None, 0):

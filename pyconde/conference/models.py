@@ -89,8 +89,8 @@ class CurrentConferenceManager(models.Manager):
     A simple filter that filters instances of the current class by the
     foreign key "conference" being the current conference.
     """
-    def get_query_set(self):
-        return super(CurrentConferenceManager, self).get_query_set().filter(conference=current_conference())
+    def get_queryset(self):
+        return super(CurrentConferenceManager, self).get_queryset().filter(conference=current_conference())
 
 
 class Section(models.Model):
@@ -187,7 +187,7 @@ class SessionDuration(models.Model):
 class ActiveSessionKindManager(CurrentConferenceManager):
     def filter_open_kinds(self):
         _now = now()
-        return self.get_query_set().filter(
+        return self.get_queryset().filter(
             Q(closed=False)
             | Q(Q(closed=None) & Q(start_date__lt=_now) & Q(end_date__gte=_now))
             )

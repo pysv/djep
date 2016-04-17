@@ -12,7 +12,7 @@ from pyconde.celery import app
 @app.task(ignore_result=True)
 def send_job_offer(cleaned_data):
     cd = cleaned_data
-    user = User.objects.filter(accept_job_offers=True)
+    users = User.objects.filter(accept_job_offers=True)
     body = render_to_string('sponsorship/emails/job_offer.txt', {
         'sponsor_name': cd['sponsor'].name,
         'text': cd['text'],
@@ -25,12 +25,12 @@ def send_job_offer(cleaned_data):
     with closing(mail.get_connection()) as connection:
         offset = 0
         while True:
-            chunk = user[offset:offset+50]
+            chunk = users[offset:offset+50]
             offset += 50
             if not chunk:
                 break
             email = mail.EmailMessage(cd['subject'], body,
-                bcc=[profile.user.email for profile in chunk],
+                bcc=[user.email for user in chunk],
                 headers={'Reply-To': cd['reply_to']},
                 connection=connection
             )

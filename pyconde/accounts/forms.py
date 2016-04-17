@@ -7,12 +7,12 @@ from django.contrib.auth import forms as auth_forms
 from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, ButtonHolder, Fieldset, Field, HTML
+from crispy_forms.layout import Layout, ButtonHolder, Fieldset, Field, HTML, Div
 
 from ..conference.models import current_conference
 from ..forms import Submit
 
-from . import validators
+from . import validators, models
 from .utils import get_full_name, SEND_MAIL_CHOICES
 
 
@@ -49,49 +49,52 @@ class SignUpForm(auth_forms.UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
-        account_fields = Fieldset(
-            _('Login information'),
-            Field('username', autofocus="autofocus"),
-            'email',
-            'password',
-            'password_repeat'
+        self.fields['password1'] = forms.CharField(
+            label=_("Password"),
+            widget=forms.PasswordInput()
         )
-        profile_fields = Fieldset(
-            _('Personal information'),
-            'full_name',
-            'display_name',
-            'addressed_as',
-            'avatar',
-            'short_info'
+        self.fields['password2'] = forms.CharField(
+            label=_("Password (again)"),
+            widget=forms.PasswordInput(),
+            help_text=_('Please repeat your password.'),
         )
-        profession_fields = Fieldset(
-            _('Professional information'),
-            'organisation',
-            'twitter',
-            'website',
-            Field('tags', css_class='tags-input'),
-            'accept_job_offers'
+        self.fields['accept_privacy_policy'] = forms.BooleanField(
+            label=_("I read and accepted the privacy policy."),
+            required=True
         )
-        privacy_fields = Fieldset(
-            _('Privacy Policy'),
-            HTML(_('{% load cms_tags %}<p class="control-group">Due to data protection '
-                   'regulations you need to explicitly accept our '
-                   '<a href="{% page_url "privacy-policy" %}">privacy policy</a>.</p>')),
-            'accept_privacy_policy',
-            'accept_pysv_conferences',
-            'accept_ep_conferences'
-        )
+
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
         self.helper.layout = Layout(
-            account_fields,
-            profile_fields,
-            profession_fields,
-            privacy_fields,
+            Fieldset(
+                _("Account Information"),
+                Field('username', autofocus="autofocus", css_class="col-md-12"),
+                Field('email', css_class="col-md-12"),
+                Field('password1', css_class="col-md-12"),
+                Field('password2', css_class="col-md-12"),
+                css_class="row"
+            ),
+            Fieldset(
+                _("Personal Information"),
+                Field('first_name', css_class="col-md-12"),
+                Field('last_name', css_class="col-md-12"),
+                #HTML(_('{% load cms_tags %}<p class="control-group">Due to data protection '
+                #       'regulations you need to explicitly accept our '
+                #       '<a href="{% page_url "privacy-policy" %}">privacy policy</a>.</p>')),
+                Field('accept_privacy_policy', css_class="col-md-12"),
+                css_class="row"
+            ),
             ButtonHolder(Submit('submit', _('Create account'), css_class='btn btn-primary'))
         )
-        if settings.ACCOUNTS_FALLBACK_TO_GRAVATAR:
-            self.fields['avatar'].help_text = _("""Please upload an image with a side length of at least 300 pixels.<br />If you don't upload an avatar your Gravatar will be used instead.""")
+
+    def signup(self, request, user):
+        """Set attributes of the user.
+
+        This method is required by django-allauth. We are not changing their
+        SignUpView, which leads to having the following code in the form
+        instead of the view.
+        """
+        user.signup(self.cleaned_data['first_name'], self.cleaned_data['last_name'])
 
     def clean_twitter(self):
         """
@@ -101,6 +104,10 @@ class SignUpForm(auth_forms.UserCreationForm):
         value = value.lstrip('@')
         validators.twitter_username(value)  # validates the max_length
         return value
+
+    class Meta:
+        model = models.User
+        fields = ('username', 'email', 'first_name', 'last_name')
 
 
 class ReviewerApplicationForm(forms.Form):
