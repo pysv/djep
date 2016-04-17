@@ -37,6 +37,11 @@ class Base(Configuration):
         return self.ADMINS
 
     EMAIL_HOST = values.Value()
+    EMAIL_PORT = values.Value()
+    EMAIL_HOST_USER = values.Value()
+    EMAIL_HOST_PASSWORD = values.Value()
+    EMAIL_USE_TLS = values.Value()
+    EMAIL_USE_SSL = values.Value()
 
     DEFAULT_FROM_EMAIL = values.EmailValue('info@euroscipy.org')
 
