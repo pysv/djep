@@ -1,4 +1,4 @@
-{% load menu_tags i18n static %}
+{% load menu_tags cms_tags i18n static %}
 
 <nav class="navbar navbar-default">
   <div class="container">
@@ -7,7 +7,7 @@
         <span class="sr-only">Toggle navigation</span>
         <i class="fa fa-align-justify"></i>
       </button>
-      <a class="navbar-brand" href="/">EuroSciPy 2016</a>
+      <a class="navbar-brand" href="{% page_url 'root' %}">EuroSciPy 2016</a>
     </div>
     <div id="euroscipy-nav" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
