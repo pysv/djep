@@ -75,6 +75,8 @@ class Base(Configuration):
 
     SCRIPT_NAME = values.Value()
 
+    USE_X_FORWARDED_HOST = values.BooleanValue(False)
+
     INSTALLED_APPS = [
         # Skins
         # 'pyconde.skins.ep14',
