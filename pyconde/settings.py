@@ -358,7 +358,7 @@ class Base(Configuration):
 
     # These languages should be available when making a session proposal.
     PROPOSAL_LANGUAGES = (
-        ('de', ugettext('German')),
+        #('de', ugettext('German')),
         ('en', ugettext('English')),
     )
 
@@ -399,7 +399,7 @@ class Base(Configuration):
 
     LOGOUT_REDIRECT_URL = values.Value('/')
 
-    ACCOUNT_ADAPTER = values.Value()
+    ACCOUNT_ADAPTER = values.Value('pyconde.skins.euroscipy2016.adapter.EuroSciPy2016Adapter')
 
     ###########################################################################
     #
