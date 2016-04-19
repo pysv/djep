@@ -399,6 +399,8 @@ class Base(Configuration):
 
     LOGOUT_REDIRECT_URL = values.Value('/')
 
+    ACCOUNT_ADAPTER = values.Value()
+
     ###########################################################################
     #
     # allauth settings
