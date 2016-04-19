@@ -393,11 +393,11 @@ class Base(Configuration):
     #
     # Auth settings
     #
-    LOGIN_ERROR_URL = '/accounts/login/'
+    LOGIN_ERROR_URL = values.Value('/accounts/login/')
 
-    LOGIN_REDIRECT_URL = '/accounts/profile/'
+    LOGIN_REDIRECT_URL = values.Value('/accounts/profile/')
 
-    LOGOUT_REDIRECT_URL = '/'
+    LOGOUT_REDIRECT_URL = values.Value('/')
 
     ###########################################################################
     #
