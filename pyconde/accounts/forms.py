@@ -78,9 +78,9 @@ class SignUpForm(auth_forms.UserCreationForm):
                 _("Personal Information"),
                 Field('first_name', css_class="col-md-12"),
                 Field('last_name', css_class="col-md-12"),
-                #HTML(_('{% load cms_tags %}<p class="control-group">Due to data protection '
-                #       'regulations you need to explicitly accept our '
-                #       '<a href="{% page_url "privacy-policy" %}">privacy policy</a>.</p>')),
+                HTML(_('{% load cms_tags %}<p class="control-group">Due to data protection '
+                       'regulations you need to explicitly accept our '
+                       '<a href="{% page_url "privacy-policy" %}">privacy policy</a>.</p>')),
                 Field('accept_privacy_policy', css_class="col-md-12"),
                 css_class="row"
             ),
