@@ -135,14 +135,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Return either the full name or email if no name has been set."""
         full_name = self.email
         if self.first_name and self.last_name:
-            full_name = '{} {}'.format(self.first_name, self.last_name)
+            full_name = u'{} {}'.format(self.first_name, self.last_name)
         return full_name
 
     def get_short_name(self):
         """Return either the shortened full name or email if no name has been set."""
         short_name = self.email
         if self.first_name and self.last_name:
-            short_name = '{}. {}'.format(self.first_name[0], self.last_name)
+            short_name = u'{}. {}'.format(self.first_name[0], self.last_name)
         return short_name
 
     def get_display_name(self):
