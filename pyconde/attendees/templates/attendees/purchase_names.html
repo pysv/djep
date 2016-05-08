@@ -14,7 +14,7 @@
                 <legend>{{ forloop.counter }}. Ticket ({{ name_form.instance.ticket_type.name }})</legend>
                 <div class="form-group{% if name_form.first_name.errors %} has-error{% endif %}">
                   <label class="control-label" for="{{ name_form.first_name.id }}" class="requiredField">
-                    {{ name_form.first_name.label }} <span class="asteriskField">*</span>:
+                    {{ name_form.first_name.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ name_form.first_name }}
@@ -25,7 +25,7 @@
                 </div>
                 <div class="form-group{% if name_form.last_name.errors %} has-error{% endif %}">
                   <label class="control-label" for="{{ name_form.last_name.id }}" class="requiredField">
-                    {{ name_form.last_name.label }} <span class="asteriskField">*</span>:
+                    {{ name_form.last_name.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ name_form.last_name }}
@@ -36,7 +36,7 @@
                 </div>
                 <div class="form-group{% if name_form.organisation.errors %} has-error{% endif %}">
                   <label class="control-label" for="{{ name_form.organisation.id }}" class="requiredField">
-                    {{ name_form.organisation.label }}:
+                    {{ name_form.organisation.label }}
                   </label>
                   <div class="controls">
                     {{ name_form.organisation }}
@@ -48,7 +48,7 @@
                 {% if not name_form.instance.ticket_type.tutorial_ticket %}
                     <div class="form-group{% if name_form.dietary_preferences.errors %} has-error{% endif %}">
                         <label class="control-label" for="{{ name_form.dietary_preferences.id }}">
-                            {{ name_form.dietary_preferences.label }}:
+                            {{ name_form.dietary_preferences.label }}
                         </label>
                         <div class="controls">
                             {{ name_form.dietary_preferences }}
@@ -60,7 +60,7 @@
                     </div>
                   <div class="form-group{% if name_form.shirtsize.errors %} has-error{% endif %}">
                     <label class="control-label" for="{{ name_form.shirtsize.id }}">
-                      {{ name_form.shirtsize.label }}:
+                      {{ name_form.shirtsize.label }}
                     </label>
                     <div class="controls">
                       {{ name_form.shirtsize }}
@@ -115,7 +115,7 @@
                 <legend>{{ forloop.counter }}. {{ sim_form.instance.ticket_type.name }}</legend>
                 <div class="form-group {% if sim_form.gender.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.gender.id }}" class="requiredField">
-                    {{ sim_form.gender.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.gender.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.gender }}
@@ -126,7 +126,7 @@
                 </div>
                 <div class="form-group {% if sim_form.first_name.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.first_name.id }}" class="requiredField">
-                    {{ sim_form.first_name.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.first_name.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.first_name }}
@@ -137,7 +137,7 @@
                 </div>
                 <div class="form-group {% if sim_form.last_name.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.last_name.id }}" class="requiredField">
-                    {{ sim_form.last_name.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.last_name.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.last_name }}
@@ -148,7 +148,7 @@
                 </div>
                 <div class="form-group {% if sim_form.date_of_birth.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.date_of_birth.id }}" class="requiredField">
-                    {{ sim_form.date_of_birth.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.date_of_birth.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.date_of_birth }}
@@ -159,7 +159,7 @@
                 </div>
                 <div class="form-group {% if sim_form.hotel_name.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.hotel_name.id }}" class="requiredField">
-                    {{ sim_form.hotel_name.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.hotel_name.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.hotel_name }}
@@ -170,7 +170,7 @@
                 </div>
                 <div class="form-group {% if sim_form.email.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.email.id }}" class="requiredField">
-                    {{ sim_form.email.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.email.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.email }}
@@ -181,7 +181,7 @@
                 </div>
                 <div class="form-group {% if sim_form.street.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.street.id }}" class="requiredField">
-                    {{ sim_form.street.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.street.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.street }}
@@ -192,7 +192,7 @@
                 </div>
                 <div class="form-group {% if sim_form.zip_code.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.zip_code.id }}" class="requiredField">
-                    {{ sim_form.zip_code.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.zip_code.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.zip_code }}
@@ -203,7 +203,7 @@
                 </div>
                 <div class="form-group {% if sim_form.city.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.city.id }}" class="requiredField">
-                    {{ sim_form.city.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.city.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.city }}
@@ -214,7 +214,7 @@
                 </div>
                 <div class="form-group {% if sim_form.country.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.country.id }}" class="requiredField">
-                    {{ sim_form.country.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.country.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.country }}
@@ -225,7 +225,7 @@
                 </div>
                 <div class="form-group {% if sim_form.phone.errors %}has-error{% endif %}">
                   <label class="control-label" for="{{ sim_form.phone.id }}" class="requiredField">
-                    {{ sim_form.phone.label }} <span class="asteriskField">*</span>:
+                    {{ sim_form.phone.label }} <span class="asteriskField">*</span>
                   </label>
                   <div class="controls">
                     {{ sim_form.phone }}

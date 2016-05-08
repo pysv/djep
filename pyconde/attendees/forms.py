@@ -119,9 +119,13 @@ class TicketNameForm(forms.ModelForm):
         )
         if 'dietary_preferences' in kwargs['instance'].related_data:
             self.initial['dietary_preferences'] = [obj.pk for obj in kwargs['instance'].related_data.get('dietary_preferences', [])]
-        self.fields['shirtsize'].queryset = self.fields['shirtsize']\
-            .queryset.filter(conference=current_conference())
-        self.fields['shirtsize'].help_text = _('''Sizing charts: <a href="http://maxnosleeves.spreadshirt.com/shop/info/producttypedetails/Popup/Show/productType/813" target="_blank">Women</a>, <a href="http://maxnosleeves.spreadshirt.com/shop/info/producttypedetails/Popup/Show/productType/812" target="_blank">Men</a>''')
+        shirtsizes = self.fields['shirtsize'].queryset.filter(conference=current_conference())
+        self.fields['shirtsize'].queryset = shirtsizes
+        if shirtsizes.count():
+            self.fields['shirtsize'].help_text = _('''Sizing charts: <a href="http://maxnosleeves.spreadshirt.com/shop/info/producttypedetails/Popup/Show/productType/813" target="_blank">Women</a>, <a href="http://maxnosleeves.spreadshirt.com/shop/info/producttypedetails/Popup/Show/productType/812" target="_blank">Men</a>''')
+        else:
+            self.fields['shirtsize'].label = _('')
+            self.fields['shirtsize'].widget = forms.HiddenInput()
 
     class Meta:
         model = VenueTicket
