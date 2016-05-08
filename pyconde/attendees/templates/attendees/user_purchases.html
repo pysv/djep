@@ -67,7 +67,7 @@
                         <div class="ticket-assignment">
                             {% if purchase.grouper.state == 'payment_received' %}
                                 {% if ticket.user %}
-                                    <p>{% blocktrans with username=ticket.user|display_name %}This ticket has been assigned to {{ username }}. Please contact the helpdesk if
+                                    <p>{% blocktrans with username=ticket.user %}This ticket has been assigned to {{ username }}. Please contact the helpdesk if
                                     you want to change this.{% endblocktrans %}</p>
                                 {% else %}
                                     {% url 'attendees_assign_ticket' pk=ticket.pk as assign_url %}
