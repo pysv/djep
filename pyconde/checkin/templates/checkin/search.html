@@ -22,46 +22,48 @@
               <td>
                 <dl>
                   <dt>{% trans "Ticket" %}: </dt>
-                  <dd>{% highlight result.ticket.id %}</dd>
+                  <dd>{{ result.ticket.id }}</dd>
                   <dt>{% trans "User ID" %}: </dt>
-                  <dd>{% highlight result.ticket.user_id %}</dd>
+                  <dd>{{ result.ticket.user_id }}</dd>
                   <dt>{% trans "Username" %}: </dt>
-                  <dd>{% highlight result.ticket.username %}</dd>
+                  <dd>{{ result.ticket.username }}</dd>
                   <dt>{% trans "Email" %}: </dt>
-                  <dd>{% highlight result.ticket.email %}</dd>
+                  <dd>{{ result.ticket.email }}</dd>
                   <dt>{% trans "Full name" %}: </dt>
-                  <dd>{% highlight result.ticket.full_name %}</dd>
+                  <dd>{{ result.ticket.full_name }}</dd>
                   <dt>{% trans "Display name" %}: </dt>
-                  <dd>{% highlight result.ticket.display_name %}</dd>
+                  <dd>{{ result.ticket.display_name }}</dd>
                 </dl>
               </td>
               <td>
                 <dl>
                   <dt>{% trans "Purchase" %}: </dt>
-                  <dd>{% highlight result.purchase.id %}</dd>
+                  <dd>{{ result.purchase.id }}</dd>
                   <dt>{% trans "Invoice" %}: </dt>
-                  <dd>{% highlight result.purchase.invoice_number %}</dd>
+                  <dd>{{ result.purchase.invoice_number }}</dd>
                   <dt>{% trans "Company" %}: </dt>
-                  <dd>{% highlight result.purchase.company_name %}</dd>
+                  <dd>{{ result.purchase.company_name }}</dd>
                   <dt>{% trans "Name" %}: </dt>
-                  <dd>{% highlight result.purchase.name %}</dd>
+                  <dd>{{ result.purchase.name }}</dd>
                   <dt>{% trans "Email" %}: </dt>
-                  <dd>{% highlight result.purchase.email %}</dd>
-                  <dt><a href="{% url 'checkin_purchase_detail' pk=result.purchase.id %}"><i class="fa fa-external-link"></i> {% trans "Open purchase" %}</a></dt>
+                  <dd>{{ result.purchase.email }}</dd>
+                  <dt>
+                    <a href="{% url 'checkin_purchase_detail' pk=result.purchase.id %}" target="_blank">
+                      <i class="fa fa-external-link"></i> {% trans "Open purchase" %}</a></dt>
                 </dl>
               </td>
               <td>
                 <dl>
                   <dt>{% trans "User ID" %}: </dt>
-                  <dd>{% highlight result.buyer.user_id %}</dd>
+                  <dd>{{ result.buyer.user_id }}</dd>
                   <dt>{% trans "Username" %}: </dt>
-                  <dd>{% highlight result.buyer.username %}</dd>
+                  <dd>{{ result.buyer.username }}</dd>
                   <dt>{% trans "Email" %}: </dt>
-                  <dd>{% highlight result.buyer.email %}</dd>
+                  <dd>{{ result.buyer.email }}</dd>
                   <dt>{% trans "Full name" %}: </dt>
-                  <dd>{% highlight result.buyer.full_name %}</dd>
+                  <dd>{{ result.buyer.full_name }}</dd>
                   <dt>{% trans "Display name" %}: </dt>
-                  <dd>{% highlight result.buyer.display_name %}</dd>
+                  <dd>{{ result.buyer.display_name }}</dd>
                 </dl>
               </td>
             </tr>
