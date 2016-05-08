@@ -55,8 +55,7 @@ class PurchaseExporter(object):
             }
         }
 
-        for ticket in Ticket.objects.select_related('ticket_type', 'voucher') \
-                                    .filter(purchase=purchase).all():
+        for ticket in Ticket.objects.filter(purchase=purchase).all():
             ticket_data = {
                 'pk': ticket.pk,
                 'title': ticket.invoice_item_title,
