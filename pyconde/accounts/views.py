@@ -15,9 +15,11 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadReque
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic as generic_views
 
+from pyconde.attendees.models import TicketType
 from pyconde.conference.models import current_conference
 from pyconde.reviews.models import Reviewer
 
@@ -118,6 +120,13 @@ class SelfProfileView(generic_views.DetailView):
     a speaker_profile, the information of it is also rendered.
     """
     template_name = 'userprofiles/profile_view.html'
+
+    def tickets_available(self):
+        return bool(TicketType.objects.available().count())
+
+    @cached_property
+    def tickets(self):
+        return self.request.user.attendees_ticket_tickets.all()
 
     def get_object(self):
         return self.request.user
