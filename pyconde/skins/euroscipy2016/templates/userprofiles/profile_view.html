@@ -72,14 +72,39 @@
   <div class="col-md-3">
     <ul class="nav nav-pills nav-stacked">
       <li>
+        <h4>{% trans 'Account' %}</h4>
+      </li>
+      <li>
         <a href="{% url 'account_profile_update' %}" class="btn btn-primary">{% trans "Update Account" %}</a>
       </li>
       <li>
         <a href="{% url 'account_change_password' %}" class="btn btn-primary">{% trans "Change Password" %}</a>
       </li>
       <li>
+        <h4>{% trans 'Proposals' %}</h4>
+      </li>
+      <li>
         <a href="{% url 'my_proposals' %}" class="btn btn-primary">{% trans "My proposals"%}</a>
       </li>
+      {% if user.attendees_ticket_tickets.count or view.tickets_available %}
+      <li>
+        <h4>{% trans 'Tickets and Purchases' %}</h4>
+      </li>
+      {% if view.tickets_available %}
+      <li>
+        <a href="{% url 'attendees_purchase' %}" class="btn btn-primary">
+          {% trans "Purchase a Ticket" %}
+        </a>
+      </li>
+      {% endif %}
+      {% if view.tickets %}
+      <li>
+        <a href="{% url 'attendees_user_purchases' %}" class="btn btn-primary">
+          {% trans "My purchased Tickets" %}
+        </a>
+      </li>
+      {% endif %}
+      {% endif%}
     </ul>
   </div>
   {% endif %}
