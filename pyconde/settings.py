@@ -210,6 +210,10 @@ class Base(Configuration):
         'disable_existing_loggers': True
     }
 
+    SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+    AUTH_USER_MODEL = 'accounts.User'
+
     ###########################################################################
     #
     # Debug settings
@@ -222,7 +226,6 @@ class Base(Configuration):
     def THUMBNAIL_DEBUG(self):
         return self.DEBUG
 
-    AUTH_USER_MODEL = 'accounts.User'
     ###########################################################################
     #
     # File settings
