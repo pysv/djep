@@ -1,12 +1,31 @@
 {% load i18n %}
 <aside class="progressbar">
     <h2>{% trans "Progress" %}</h2>
-    <div class="progress progress-success">
-        {% if step == 'start' %}<div class="bar" style="width:10%"></div>{% endif %}
-        {% if step == 'names' %}<div class="bar" style="width:30%"></div>{% endif %}
-        {% if step == 'overview' %}<div class="bar" style="width:50%"></div>{% endif %}
-        {% if step == 'payment' %}<div class="bar" style="width:70%"></div>{% endif %}
-        {% if step == 'done' %}<div class="bar" style="width:100%"></div>{% endif %}
+    <div class="progress">
+        <div
+        class="progress-bar progress-bar-success" role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        {% if step == 'start' %}
+        aria-valuenow="10"
+        style="width: 10%;"
+        {% endif %}
+        {% if step == 'names' %}
+        aria-valuenow="30"
+        style="width: 30%;"
+        {% endif %}
+        {% if step == 'overview' %}
+        aria-valuenow="50"
+        style="width: 50%;"
+        {% endif %}
+        {% if step == 'payment' %}
+        aria-valuenow="70"
+        style="width: 70%;"
+        {% endif %}
+        {% if step == 'done' %}
+        aria-valuenow="100"
+        style="width: 100%;"
+        {% endif %}></div>
     </div>
     <ol>
         <li class="{% if step == 'start' %}active{% endif %}">{% trans "Start" context "purchase-step" %}</li>

@@ -133,3 +133,7 @@ footer ul {
     max-width: 100%;
     height: auto;
 }
+
+.progressbar .active {
+    font-weight: bold;
+}
