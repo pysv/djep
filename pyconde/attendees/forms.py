@@ -105,8 +105,8 @@ class TicketNameForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         assert 'instance' in kwargs, 'instance is required.'
 
-        super(TicketNameForm, self).__init__(
-            prefix='tn-%s' % kwargs['instance'].pk, *args, **kwargs)
+        kwargs['prefix'] = 'tn-%s' % kwargs['instance'].pk
+        super(TicketNameForm, self).__init__(*args, **kwargs)
 
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
