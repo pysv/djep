@@ -23,10 +23,12 @@
                             <dt>{% trans "Name" %}:</dt>
                             <dd>{{ ticket.real_ticket.first_name }} {{ ticket.real_ticket.last_name }}</dd>
                         </dl>
+                        {% if ticket.real_ticket.shirtsize %}
                         <dl>
                             <dt>{% trans "Desired T-Shirt size" %}:</dt>
                             <dd>{% if ticket.real_ticket.shirtsize %}{{ ticket.real_ticket.shirtsize }}{% else %}-{% endif %}</dd>
                         </dl>
+                        {% endif %}
                         {% with preferences=ticket.real_ticket.dietary_preferences.all %}{% if preferences %}
                         <dl>
                             <dt>{% trans "Dietary preferences" %}:</dt>
