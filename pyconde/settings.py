@@ -127,6 +127,7 @@ class Base(Configuration):
         #'cms.plugins.text',
         'djangocms_style',
         #'cmsplugin_news',
+        'djangocms_picture',
         'pyconde.testimonials',
 
         # Symposion apps
