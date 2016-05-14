@@ -58,7 +58,7 @@ def complete_purchase(request, purchase):
     purchase.invoice_number = generate_invoice_number()
     purchase.save()
     send_purchase_confirmation_mail(purchase)
-    tasks.render_invoice.delay(purchase_id=purchase.id)
+    #tasks.render_invoice.delay(purchase_id=purchase.id)
     return HttpResponseRedirect(reverse('attendees_purchase_done'))
 
 
