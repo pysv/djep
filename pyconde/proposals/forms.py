@@ -111,10 +111,10 @@ class ProposalSubmissionForm(forms.ModelForm):
             form.fields['track'] = forms.ModelChoiceField(label=_("Track"), required=True, initial=None,
                 queryset=tracks)
         if 'abstract' in self.fields:
-            form.fields['abstract'].help_text = _("""Up to around 50 words. Appears in the printed program. <br />This field supports <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank" rel="external">Markdown</a> input.""")
+            form.fields['abstract'].help_text = _("""Describe your presentation in detail. This is what will be reviewed during the review phase.<br />This field supports <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank" rel="external">Markdown</a> input.""")
             # form.fields['abstract'].validators = [validators.MaxLengthValidator(3000)]
         if 'description' in form.fields:
-            form.fields['description'].help_text = _("""Describe your presentation in detail. This is what will be reviewed during the review phase.<br />This field supports <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank" rel="external">Markdown</a> input.""")
+            form.fields['description'].help_text = _("""Up to around 50 words. Appears in the printed program. <br />This field supports <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank" rel="external">Markdown</a> input.""")
             # form.fields['description'].validators = [validators.MaxLengthValidator(2000)]
         if 'additional_speakers' in form.fields:
             form.fields['additional_speakers'].help_text = _("""If you want to present with others, please enter their names here.""")
