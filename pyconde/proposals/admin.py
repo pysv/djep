@@ -33,8 +33,7 @@ class ProposalAdmin(admin.ModelAdmin):
                 'conference', 'kind', 'duration', 'track', 'speaker__user'
             ).only(
                 'title', 'kind__name', 'conference__title', 'duration__label',
-                'duration__minutes', 'speaker__user__display_name',
-                'speaker__user__full_name', 'speaker__user__user',
+                'duration__minutes', 'speaker__user__display_name', 'speaker__user__user',
                 'speaker__user__username', 'track__name'
             )
         elif view == 'form':
