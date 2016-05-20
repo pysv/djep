@@ -131,6 +131,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __unicode__(self):
         return self.get_full_name()
 
+    @property
+    def full_name(self):
+        """Legacy support for older views."""
+        return self.get_full_name()
+
     def get_full_name(self):
         """Return either the full name or email if no name has been set."""
         full_name = self.email
