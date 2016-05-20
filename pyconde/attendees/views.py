@@ -21,6 +21,7 @@ import pymill
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -31,18 +32,30 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.template.response import TemplateResponse
 import django.views.generic as generic_views
+from django.views.generic.detail import SingleObjectMixin
+
+from wkhtmltopdf.views import PDFTemplateView
 
 from pyconde.conference.models import current_conference
 from braces.views import LoginRequiredMixin
 
 from .models import TicketType, Ticket, VenueTicket, SIMCardTicket, Purchase
-from .tasks import send_invoice
 from . import forms
 from . import utils
 from . import exceptions
 
 
 LOG = logging.getLogger(__name__)
+
+
+class PDFExportPermissionMixin(SingleObjectMixin):
+    model = Purchase
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.user != request.user and not request.user.is_staff:
+            raise PermissionDenied
+        return super(PDFExportPermissionMixin, self).dispatch(request, *args, **kwargs)
 
 
 class PurchaseMixin(object):
@@ -550,7 +563,6 @@ class UserPurchasesView(LoginRequiredMixin, generic_views.TemplateView):
             'tickets': Ticket.objects
                              .filter(purchase__user=self.request.user)
                              .exclude(purchase__state='incomplete')
-                             .exclude(purchase__state='new')
                              .select_related('purchase', 'purchase__user',
                                              'ticket_type__content_type',
                                              'user')
@@ -605,27 +617,15 @@ class EditTicketView(LoginRequiredMixin, generic_views.UpdateView):
         return reverse('attendees_user_tickets')
 
 
-class UserResendInvoiceView(LoginRequiredMixin, generic_views.View):
+class DownloadInvoiceView(LoginRequiredMixin, PDFExportPermissionMixin, PDFTemplateView):
     """
-    This view triggers a sending of the specified invoice.
+    This generates and returns a invoice pdf.
     """
 
-    http_method_names = ['post']
+    template_name = 'invoice_pdf.html'
 
-    def post(self, request):
-        try:
-            purchase_id = int(request.POST.get('p'))
-            p = Purchase.objects.get(id=purchase_id, exported=True,
-                 user=request.user)
-            send_invoice(p.id, (p.email_receiver,))
-            messages.success(request,
-                _('The invoice has been sent to you.'))
-        except (Purchase.DoesNotExist, KeyError, ValueError):
-            messages.error(request,
-                _('The invoice for this purchase does not exist or has not '
-                  'yet been generated. You will receive a mail with the '
-                  'invoice soon.'))
-        return HttpResponseRedirect(reverse('attendees_user_purchases'))
+    def get_filename(self):
+        return '{}.pdf'.format(self.object.full_invoice_number)
 
 
 class AssignTicketView(LoginRequiredMixin, generic_views.View):

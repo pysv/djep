@@ -1,0 +1,155 @@
+{% load static from staticfiles %}
+{% load i18n %}
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{% static 'assets/css/pdf.css' %}" rel="stylesheet">
+  </head>
+  <body>
+    <div class="left-col left">
+      <header class="header">
+        {% block header %}
+        <h1>Eine Programmiersprache verändert die Welt!</h1>
+        <img class="logo" src="{% static 'assets/images/logo-invoice.png' %}"> <br/>
+        {% endblock %}
+      </header>
+
+      <div class="address">
+        <div class="from">
+          Python Software Verband e.V · Schulstraße 20 · 15366 Neuenhagen bei Berlin · DE
+        </div>
+        <div class="to">
+        {% block address %}
+          {% if view.object.company_name %}{{ view.object.company_name }}<br/>{% endif %}
+          {{ view.object.first_name }} {{ view.object.last_name }}<br/>
+          {{ view.object.street }}<br/>
+          {{ view.object.zip_code }} {{ view.object.city }}<br/>
+          {{ view.object.country }}
+        {% endblock %}
+        </div>
+      </div>
+
+      <div class="receipt">
+        <div class="base-info">
+          <div class="half left">
+            <span class="highlight">invoice number</span><br/>
+            {{ view.object.full_invoice_number }}
+          </div>
+          <div class="half right">
+            <span class="highlight">date</span><br/>
+            {{ view.object.date_added|date:"M d, Y" }}
+          </div>
+        </div>
+        <div class="greetings">
+          <h1>Invoice</h1>
+          <h2>Your tickets for the EuroSciPy 2016</h2>
+        </div>
+
+        <div class="price-table">
+          <table>
+            <thead>
+              <th class="text-left row-1">pos.</th>
+              <th class="text-left row-2">description</th>
+              <th class="text-right row-3">amount</th>
+            </thead>
+            <tbody>
+              {% for ticket in object.ticket_set.all %}
+              <tr>
+                <td class="row-1">{{ forloop.counter }}</td>
+                <td class="row-2">
+                  {% autoescape off %}
+                    {{ ticket.invoice_item_title }}
+                  {% endautoescape %}
+                </td>
+                <td class="row-3 text-right">
+                  {{ ticket.ticket_type.fee_without_tax|floatformat:2 }} €
+                </td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td></td>
+                <td class="text-right">
+                  subtotal<br/>
+                  value added tax 19%<br/>
+                  <strong>total amount</strong>
+                </td>
+                <td class="text-right">
+                  {{ object.subtotal|floatformat:2 }} €<br/>
+                  {{ object.payment_tax|floatformat:2 }} €<br/>
+                  {{ object.calculate_payment_total|floatformat:2 }} €
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="closing">
+          <p>
+            A conference ticket includes entry to the conference, drinks and snacks during the pause, lunch buffet, free WLAN access. A Social Event Ticket includes entry to the social event, as well as food and drinks at the social event.
+          </p>
+          <p>
+            Please transfer the indicated amount, along with a reference to the billing number, within the next 14 days to the following account: <span class="highlight bold">Python Software Verband e. V., IBAN DE73 8008 0000 0822 2678 00, BIC DRESDEFF800</span>
+          </p>
+
+          <p>
+            If you have any questions about this invoice, please don't hesitate to contact us at info@euroscipy.org.
+          </p>
+
+          <p class="top-space">
+            Kind Regards
+          </p>
+
+          <p class="top-space">
+            Your EuroSciPy 2016 Team
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="right-col right">
+      <div class="right-col-inner">
+      {% block address-right %}
+        <div class="right-logo">
+          <img src="{% static 'assets/images/python-logo.png' %}">
+          <h1>
+            <span class="highlight">Python</span><br/>
+            <span class="highlight">Software</span><br/>
+            <span class="highlight">Verband</span><br/>
+            e.V.
+          </h1>
+        </div>
+        <p>
+          Interessenverband für die Programmiersprache Python im deutschsprachigen Raum
+        </p>
+        <p>
+          Schulstraße 20<br/>
+          15366 Neuenhagen bei Berlin<br/>
+          Deutschland
+        </p>
+        <p>
+          Tel.   +49 33 42 211 999–4<br/>
+          Fax  +49 33 42 211 999–5
+        </p>
+        <p>
+          Sitz des Vereins<br/>
+          Halle (Saale)
+        </p>
+        <p>
+          Amtsgericht Stendal<br/>
+          Vereinsregister 33442
+        </p>
+        <p>
+          USt.-ID: DE287430795
+        </p>
+        <p>
+          1. Vorsitzender<br/>
+          Mike Müller<br/>
+          2. Vorsitzender<br/>
+          Reimar Bauer
+        </p>
+      {% endblock %}
+      </div>
+    </div>
+  </div>
+
+  </body>
+</html>

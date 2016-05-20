@@ -1,0 +1,130 @@
+* {
+  font-size: 11px;
+}
+
+body {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+h1 {
+  font-size: 130%;
+  color: #005DB8;
+  font-weight: bold;
+  margin-bottom: 0;
+  padding-top: 1em;
+  padding-bottom: 0;
+}
+
+h2 {
+  font-size: 120%;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.top-space {
+  margin-top: 2em;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.logo {
+  height: 140px;
+}
+
+.half {
+  width: 50%;
+}
+
+.header {
+  margin-bottom: 2.5em;
+}
+
+.address {
+  padding: 0;
+  margin: 0;
+}
+
+.from {
+  font-size: 75%;
+  color: #005DB8;
+}
+
+.highlight {
+  color: #005DB8;
+}
+
+.greetings {
+  margin-bottom: 3.5em;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+
+.receipt {
+  width: 100%;
+  margin-top: 10em;
+}
+
+.greetings, .header, .address {
+  width: 100%;
+}
+
+.receipt-information {
+  width: 70%;
+}
+
+.price-table {
+  margin-top: 5em;
+}
+
+.reelport-address {
+  width: 20%;
+  color: #2D99B3;
+  border-left: 1px solid #2D99B3;
+  padding-left: 0.5em;
+  height: 35%;
+
+  position: absolute; /* make it absolute */
+  bottom: 0; /* stick to the bottom */
+  right: 0; /* stick to the right */
+}
+
+.reelport-address p {
+  font-size: 50%;
+}
+
+.total {
+  border-top: 1px solid #000000;
+  padding-top: 0.2em;
+  margin-top: 1em;
+}
+
+.receipt-information {
+  width: 70%;
+}
+
+.society {
+  width: 30%;
+}
+
+.society div {
+  padding-left: 1em;
+}
+
+.clear {
+  clear: both;
+  min-height: 1.5em;
+}
+
+.closing {
+  margin-top: 2.5em;
+}

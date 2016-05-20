@@ -32,16 +32,16 @@
                 {{ purchase.grouper.street }}<br>
                 {{ purchase.grouper.zip_code }} {{ purchase.grouper.country }}
             </p>
-            {% if purchase.grouper.exported and purchase.grouper.state != 'canceled' %}
+            {% if purchase.grouper.state != 'canceled' %}
             <p>
-                <form action="{% url 'attendees_user_resend_invoice' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ purchase.grouper.id }}" name="p" />
-                    <input type="submit" value="{% trans "Resend invoice" %}" class="btn btn-primary" />
-                </form>
+                <a href="{% url 'attendees_download_invoice' pk=purchase.grouper.pk %}" class="btn btn-success" target="_blank">
+                    {% trans "Download Invoice" %}
+                </a>
             </p>
             {% endif %}
         </div>
+
+        {% if purchase.grouper.state == "payment_received" %}
         <div class="tickets">
             <h3>{% trans "Tickets" %}</h3>
             <ul>
@@ -82,7 +82,11 @@
                 {% endfor %}
             </ul>
         </div>
+        {% endif %}
     </div>
+    {% if not forloop.last %}
+    <hr />
+    {% endif %}
     {% empty %}
     <p>{% trans "You haven't made any purchases yet." %}
     {% endfor %}
