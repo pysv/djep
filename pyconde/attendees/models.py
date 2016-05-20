@@ -232,6 +232,14 @@ class TicketType(models.Model):
             raise ValidationError(_("Invalid editable fields specified: %s") % u", ".join(invalid_field_names))
         return val
 
+    @property
+    def tax(self):
+        return self.fee - (self.fee / 1.19)
+
+    @property
+    def fee_without_tax(self):
+        return self.fee - self.tax
+
 
 class PurchaseManager(models.Manager):
     def get_exportable_purchases(self):
@@ -287,6 +295,9 @@ class Purchase(models.Model):
         verbose_name = _('Purchase')
         verbose_name_plural = _('Purchases')
 
+    def subtotal(self, tickets=None):
+        return self.calculate_payment_total() - self.payment_tax
+
     def calculate_payment_total(self, tickets=None):
         # TODO: Externalize this into a utils method to be usable "offline"
         # TODO Maybe it's necessary to add VAT to payment_total.
@@ -319,7 +330,7 @@ class Purchase(models.Model):
     def full_invoice_number(self):
         if self.invoice_number is None:
             return None
-        return settings.INVOICE_NUMBER_FORMAT.format(self.invoice_number)
+        return settings.INVOICE_NUMBER_FORMAT.format(str(self.invoice_number).zfill(4))
 
     @property
     def invoice_filepath(self):
@@ -476,7 +487,7 @@ class SupportTicket(Ticket):
 
     @property
     def invoice_item_title(self):
-        return force_text('1 “%s”' % self.ticket_type.name)
+        return force_text('“%s”' % self.ticket_type.name)
 
 
 class VenueTicket(Ticket):
@@ -509,7 +520,7 @@ class VenueTicket(Ticket):
 
     @property
     def invoice_item_title(self):
-        return force_text('1 “%s” Ticket for:<br /><i>%s %s</i>' %
+        return force_text('“%s” Ticket for:<br /><i>%s %s</i>' %
             (self.ticket_type.name, self.first_name, self.last_name))
 
 
@@ -556,5 +567,5 @@ class SIMCardTicket(Ticket):
 
     @property
     def invoice_item_title(self):
-        return force_text('1 SIM Card for:<br /><i>%s %s</i>' %
+        return force_text('SIM Card for:<br /><i>%s %s</i>' %
             (self.first_name, self.last_name))
