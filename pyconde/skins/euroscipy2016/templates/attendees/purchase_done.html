@@ -1,0 +1,10 @@
+{% extends "attendees/purchase_base.html" %}
+{% load i18n %}
+
+{% block content %}
+    {{ block.super }}
+
+    <h2>{% trans "Purchase complete!" %}</h2>
+    <p>{% trans "Thank you for purchasing a EuroSciPy 2016 ticket! Soon you will receive a confirmation e-mail with further information." %}</p>
+
+{% endblock %}
