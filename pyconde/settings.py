@@ -398,6 +398,8 @@ class Base(Configuration):
     #
     # Auth settings
     #
+    LOGIN_URL = values.Value('/accounts/login/')
+
     LOGIN_ERROR_URL = values.Value('/accounts/login/')
 
     LOGIN_REDIRECT_URL = values.Value('/accounts/profile/')
