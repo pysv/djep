@@ -86,7 +86,7 @@
       <li>
         <a href="{% url 'my_proposals' %}" class="btn btn-primary">{% trans "My proposals"%}</a>
       </li>
-      {% if user.attendees_ticket_tickets.count or view.tickets_available %}
+      {% if user.attendees_ticket_tickets.count or user.purchase_set.count or view.tickets_available %}
       <li>
         <h4>{% trans 'Tickets and Purchases' %}</h4>
       </li>
@@ -97,7 +97,7 @@
         </a>
       </li>
       {% endif %}
-      {% if view.tickets %}
+      {% if user.attendees_ticket_tickets.count or user.purchase_set.count %}
       <li>
         <a href="{% url 'attendees_user_purchases' %}" class="btn btn-primary">
           {% trans "My purchased Tickets" %}

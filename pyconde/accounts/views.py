@@ -124,10 +124,6 @@ class SelfProfileView(generic_views.DetailView):
     def tickets_available(self):
         return bool(TicketType.objects.available().count())
 
-    @cached_property
-    def tickets(self):
-        return self.request.user.attendees_ticket_tickets.all()
-
     def get_object(self):
         return self.request.user
 
