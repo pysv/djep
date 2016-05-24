@@ -3,23 +3,22 @@
 }
 
 body {
-  padding-left: 40px;
-  padding-right: 40px;
+  margin-left: 50px;
+  margin-right: 10px;
+  margin-top: 20px;
 }
 
 h1 {
   font-size: 130%;
-  color: #005DB8;
   font-weight: bold;
-  margin-bottom: 0;
-  padding-top: 1em;
-  padding-bottom: 0;
+  padding: 0;
+  margin: 0;
 }
 
 h2 {
-  font-size: 120%;
-  margin-top: 0;
-  padding-top: 0;
+  font-size: 110%;
+  padding: 0;
+  margin: 0;
 }
 
 .top-space {
@@ -31,7 +30,8 @@ h2 {
 }
 
 .logo {
-  height: 140px;
+  margin-top: 10px;
+  height: 90px;
 }
 
 .half {
@@ -42,6 +42,10 @@ h2 {
   margin-bottom: 2.5em;
 }
 
+.header h1 {
+  color: #A9B4B4;
+}
+
 .address {
   padding: 0;
   margin: 0;
@@ -49,15 +53,16 @@ h2 {
 
 .from {
   font-size: 75%;
-  color: #005DB8;
+  text-decoration: underline;
 }
 
-.highlight {
-  color: #005DB8;
+.base-info {
+  margin-bottom: 3.5em;
 }
 
 .greetings {
   margin-bottom: 3.5em;
+  margin-top: 3.5em;
 }
 
 .left {
@@ -78,28 +83,25 @@ h2 {
   width: 100%;
 }
 
-.receipt-information {
+.left-col {
   width: 70%;
+  display: box;
 }
 
-.price-table {
-  margin-top: 5em;
+.price-table table {
+  width: 100%;
 }
 
-.reelport-address {
-  width: 20%;
-  color: #2D99B3;
-  border-left: 1px solid #2D99B3;
-  padding-left: 0.5em;
-  height: 35%;
-
-  position: absolute; /* make it absolute */
-  bottom: 0; /* stick to the bottom */
-  right: 0; /* stick to the right */
+.row-1 {
+  width: 10%;
 }
 
-.reelport-address p {
-  font-size: 50%;
+.row-2 {
+  width: 75%;
+}
+
+.row-3 {
+  width: 15%;
 }
 
 .total {
@@ -108,12 +110,24 @@ h2 {
   margin-top: 1em;
 }
 
-.receipt-information {
-  width: 70%;
+.highlight {
+  font-weight: bold;
 }
 
-.society {
-  width: 30%;
+.receipt-information {
+  width: 75%;
+}
+
+.right-col {
+  width: 25%;
+  text-align: right;
+  display: box;
+  font-size: 75;
+}
+
+.right-col-inner {
+  display: block;
+  font-weight: 75%;
 }
 
 .society div {
@@ -127,4 +141,34 @@ h2 {
 
 .closing {
   margin-top: 2.5em;
+  text-align: justify;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.space-right {
+  padding-right: 1em;
+}
+
+.right-logo {
+  color: #A9B4B4;
+  clear: both;
+}
+
+.right-logo img {
+  float: left;
+  width: 50%;
+}
+
+.right-logo h1 {
+  width: 50%;
+  float: right;
+  text-align: left;
+  color: #76807C;
 }
