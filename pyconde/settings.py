@@ -445,7 +445,7 @@ class Base(Configuration):
 
     PURCHASE_INVOICE_FONT_ROOT = values.Value()  # absolute path on the filesystem
 
-    PURCHASE_INVOICE_NUMBER_FORMAT = values.Value('INVOICE-{0:d}')
+    PURCHASE_INVOICE_NUMBER_FORMAT = values.Value('ES16-{}')
 
     PURCHASE_INVOICE_ROOT = values.Value()  # absolute path on the filesystem
 
@@ -560,6 +560,8 @@ class Testing(Dev):
     CELERY_ALWAYS_EAGER = True
     CELERY_ACCEPT_CONTENT = ['json']
     PURCHASE_INVOICE_DISABLE_RENDERING = True
+
+    WKHTMLTOPDF_CMD = values.Value('/usr/bin/wkthmltopdf')
 
 
 class Staging(Base):
