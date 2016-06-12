@@ -8,12 +8,6 @@ from . import models
 
 class ProposalAdminForm(forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super(ProposalAdminForm, self).__init__(*args, **kwargs)
-        speakers = speaker_models.Speaker.objects.get_qs_for_formfield()
-        self.fields['speaker'].queryset = speakers
-        self.fields['additional_speakers'].queryset = speakers
-
     def clean_location(self):
         if not self.cleaned_data['location']:
             raise forms.ValidationError(ugettext('The location is mandatory.'))
@@ -24,25 +18,6 @@ class ProposalAdmin(admin.ModelAdmin):
     list_display = ("title", "kind", "conference", "duration", "speaker", "track")
     list_filter = ("conference", "kind", "duration", "track")
     form = ProposalAdminForm
-
-    def queryset(self, request):
-        qs = super(ProposalAdmin, self).queryset(request)
-        view = getattr(self, 'view', None)
-        if view == 'list':
-            qs = qs.select_related(
-                'conference', 'kind', 'duration', 'track', 'speaker__user'
-            ).only(
-                'title', 'kind__name', 'conference__title', 'duration__label',
-                'duration__minutes', 'speaker__user__display_name', 'speaker__user__user',
-                'speaker__user__username', 'track__name'
-            )
-        elif view == 'form':
-            qs = qs.select_related(
-                'conference', 'kind', 'duration', 'track', 'location',
-                'speaker__user', 'additional_speakers__user',
-                'available_timeslots'
-            )
-        return qs
 
     def add_view(self, *args, **kwargs):
         self.view = 'form'
