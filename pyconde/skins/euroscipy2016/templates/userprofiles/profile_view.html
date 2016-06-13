@@ -105,6 +105,16 @@
       </li>
       {% endif %}
       {% endif%}
+      {% if user.reviewer_set.count %}
+      <li>
+        <h4>{% trans 'Reviews' %}</h4>
+      </li>
+      <li>
+        <a href="{% url 'reviews-available-proposals' %}" class="btn btn-primary">
+          {% trans "List all Proposals" %}
+        </a>
+      </li>
+      {% endif %}
     </ul>
   </div>
   {% endif %}
