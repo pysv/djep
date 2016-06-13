@@ -135,7 +135,7 @@ class ReviewerAdmin(admin.ModelAdmin):
     search_fields = ('user__username',)
 
     def user_display_name(self, instance):
-        return instance.user.profile.display_name
+        return instance.user.display_name
 
     def user_email(self, instance):
         return instance.user.email

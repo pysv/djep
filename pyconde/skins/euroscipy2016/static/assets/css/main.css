@@ -137,3 +137,15 @@ footer ul {
 .progressbar .active {
     font-weight: bold;
 }
+
+.kind-sprint {
+    background-color: #d9edf7;
+}
+
+.kind-talk {
+    background-color: #fcf8e3;
+}
+
+.kind-tutorial {
+    background-color: #dff0d8;
+}

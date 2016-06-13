@@ -237,7 +237,7 @@ class Reviewer(models.Model):
         verbose_name_plural = _('reviewers')
 
     def __unicode__(self):
-        return "%s (%s)" % (self.user, self.get_state_display())
+        return u"%s (%s)" % (self.user, self.get_state_display())
 
     def save(self, *args, **kwargs):
         from .utils import get_review_permission
