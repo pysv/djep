@@ -10,5 +10,5 @@ def speaker_box(context, speaker):
         'name': unicode(speaker),
         'avatar': speaker.user.avatar,
         'user': speaker.user,
-        'STATIC_URL': context['STATIC_URL']
+        'STATIC_URL': context.get('STATIC_URL')
     }
