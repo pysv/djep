@@ -1,7 +1,6 @@
 from django.template import Library
 from django.conf import settings
 
-from .. import models
 from .. import utils
 
 
