@@ -14,8 +14,7 @@ class SpeakerManager(models.Manager):
     use_for_related_fields = True
 
     def get_qs_for_formfield(self):
-        qs = self.select_related('user').only(
-            'user__display_name', 'user__full_name', 'user__username')
+        qs = self.select_related('user')
         return qs
 
 
