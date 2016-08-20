@@ -55,6 +55,11 @@
               </a>
             </li>
             {% endif %}
+            {% if user.is_superuser %}
+            <li>
+              <a href="{% url "attendees_download_all_invoices" %}">Download all Invoices</a>
+            </li>
+            {% endif %}
             {% if perms.accounts.send_user_mails %}
             <li>
               <a href="{% url "account_sendmail" %}">

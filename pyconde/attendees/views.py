@@ -22,9 +22,10 @@ import pymill
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
-from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Q
 from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -626,6 +627,29 @@ class DownloadInvoiceView(LoginRequiredMixin, PDFExportPermissionMixin, PDFTempl
 
     def get_filename(self):
         return '{}.pdf'.format(self.object.full_invoice_number)
+
+
+class DownloadAllInvoicesView(generic_views.View):
+    """
+    This view generates a metalink file to download all invoices.
+    """
+    template_name = 'attendees/invoices.metalink'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied()
+        return super(DownloadAllInvoicesView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        response = render(request, self.template_name, {'view': self},
+            content_type='application/metalink+xml')
+        return response
+
+    def get_site(self):
+        return get_current_site(self.request)
+
+    def get_invoices(self):
+        return Purchase.objects.exclude(state='canceled')
 
 
 class AssignTicketView(LoginRequiredMixin, generic_views.View):
