@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metalink xmlns="urn:ietf:params:xml:ns:metalink">
   {% for invoice in view.get_invoices %}
+  {% if invoice.full_invoice_number %}
   <file name="{{ invoice.full_invoice_number }}.pdf">
     <url>
         {{ view.get_site.domain }}{% url 'attendees_download_invoice' pk=invoice.pk %}
     </url>
   </file>
+  {% endif %}
   {% endfor %}
 </metalink>
