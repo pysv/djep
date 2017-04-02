@@ -186,7 +186,6 @@ class BadgeExporter(object):
                         index, start = trainings_pk_index[t.id]
                         attendings[start].append(index)
                     badge['trainings'] = attendings
-            from pdb import set_trace; set_trace()
             if status_keys:
                 badge['status'] = list(status_keys)
 
