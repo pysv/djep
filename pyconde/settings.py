@@ -43,11 +43,11 @@ class Base(Configuration):
     EMAIL_USE_TLS = values.BooleanValue(True)
     EMAIL_USE_SSL = values.BooleanValue(False)
 
-    DEFAULT_FROM_EMAIL = values.EmailValue('info@euroscipy.org')
+    DEFAULT_FROM_EMAIL = values.EmailValue('info@pycon.de')
 
-    SERVER_EMAIL = values.EmailValue('info@euroscipy.org')
+    SERVER_EMAIL = values.EmailValue('info@pycon.de')
 
-    SUPPORT_EMAIL = values.EmailValue('info@euroscipy.org')
+    SUPPORT_EMAIL = values.EmailValue('info@pycon.de')
 
     TIME_ZONE = 'Europe/Berlin'
 
@@ -55,7 +55,7 @@ class Base(Configuration):
 
     SECRET_KEY = values.SecretValue()
 
-    EMAIL_SUBJECT_PREFIX = values.Value('[EuroSciPy 2016] ')
+    EMAIL_SUBJECT_PREFIX = values.Value('[PyconDE 2017] ')
 
     USE_I18N = True
 
@@ -81,7 +81,8 @@ class Base(Configuration):
         # Skins
         # 'pyconde.skins.ep14',
         # 'pyconde.skins.default',
-        'pyconde.skins.euroscipy2016',
+        # 'pyconde.skins.euroscipy2016',
+        'pyconde.skins.pyconde2017',
         'djangocms_admin_style',
         'django.contrib.admin',
         'django.contrib.auth',
@@ -328,9 +329,9 @@ class Base(Configuration):
         ]
     }
 
-    CMSPLUGIN_NEWS_FEED_TITLE = u'EuroPython 2014 News'
+    CMSPLUGIN_NEWS_FEED_TITLE = u'PyconDE 2017 News'
 
-    CMSPLUGIN_NEWS_FEED_DESCRIPTION = u'News from EuroPython 2014'
+    CMSPLUGIN_NEWS_FEED_DESCRIPTION = u'News from PyconDE 2017'
 
     SCHEDULE_ATTENDING_POSSIBLE = values.ListValue(['training'])
     SCHEDULE_CACHE_SCHEDULE = values.BooleanValue(True)
@@ -406,7 +407,7 @@ class Base(Configuration):
 
     LOGOUT_REDIRECT_URL = values.Value('/')
 
-    ACCOUNT_ADAPTER = values.Value('pyconde.skins.euroscipy2016.adapter.EuroSciPy2016Adapter')
+    ACCOUNT_ADAPTER = values.Value('pyconde.skins.pyconde2017.adapter.PyconDE2017Adapter')
 
     ###########################################################################
     #
@@ -426,7 +427,7 @@ class Base(Configuration):
 
     PAYMILL_PUBLIC_KEY = values.Value()
 
-    PAYMILL_TRANSACTION_DESCRIPTION = values.Value('EuroPython 2014: Purchase ID {purchase_pk}')
+    PAYMILL_TRANSACTION_DESCRIPTION = values.Value('PyconDE 2017: Purchase ID {purchase_pk}')
 
     PAYMENT_METHODS = values.ListValue(['invoice', 'creditcard'])
 
