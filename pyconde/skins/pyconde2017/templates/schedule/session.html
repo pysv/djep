@@ -1,0 +1,69 @@
+{% extends "schedule/session_base.html" %}
+{% load i18n markup speaker_tags embed_tags %}
+
+{% block title %}{% trans "Session" %}: {{ session.title }}{% endblock %}
+{% block page_title %}{% trans "Session" %}: {{ session.title }}{% endblock %}
+{% block bodyclass %}sessionpage with-sidebar{% endblock %}
+
+{% block details %}
+    <article class="session">
+        <div class="meta">
+            {% if session.start or session.end %}
+                <dl>
+                    <dt>{% trans "Duration" %}:</dt>
+                    <dd>{{ session.start|date:"DATE_FORMAT" }} {{ session.start|time:"H:i" }} - {{ session.end|time:"H:i" }}</dd>
+                </dl>
+            {% endif %}
+            {% if level %}
+            <dl>
+                <dt>{% trans "target-audience" as target_audience_label %}{{ target_audience_label|capfirst }}:</dt>
+                <dd>{% if level %} <span class="level-{{ level }}">{{ level_name }}</span>{% endif %}</dd>
+            </dl>
+            {% endif %}
+        </div>
+
+        <div class="abstract">
+            {{ session.abstract|markdown:"safe" }}
+        </div>
+
+        {% if session.kind.slug == "training" and session.description %}
+            <div class="description">
+                {{ session.description|markdown:"safe" }}
+            </div>
+        {% endif %}
+
+        {% if session.slides_url %}
+            <div class="slides">
+                <h2>{% trans "Slides" %}</h2>
+                {% embed_slides session.slides_url %}
+            </div>
+        {% endif %}
+
+        {% if session.video_url %}
+            <div class="video">
+                <h2>{% trans "Video" %}</h2>
+                {% embed_video session.video_url %}
+            </div>
+        {% endif %}
+        {% if can_edit or can_admin %}
+            <div class="actions">
+                {% if can_edit %}
+                    <a class="btn" href="edit/"><i class="fa fa-fw fa-pencil"></i>{% trans "Edit" %}</a>
+                {% endif %}
+                {% if can_admin %}
+                    <a class="btn btn-danger" href="{% url "admin:schedule_session_change" session.id %}"><i class="fa fa-fw fa-lock"></i>{% trans "Admin" %}</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </article>
+{% endblock %}
+
+{% block sidebar %}
+    <div id="speakers" class="box">
+        <h2>{% trans "Speakers:" %}</h2>
+        {% speaker_box session.speaker %}
+        {% for speaker in session.additional_speakers.all %}
+            {% speaker_box speaker %}
+        {% endfor %}
+    </div>
+{% endblock %}

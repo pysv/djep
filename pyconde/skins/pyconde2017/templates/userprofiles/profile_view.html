@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load i18n account_tags thumbnail markup helper_tags gravatar %}
+{% block title %}{{ object.get_display_name }}{% endblock %}
+{% block page_title %}{{ object.get_display_name }}{% endblock %}
+
+{% block site_title %}{% endblock %}
+
+{% block site_content %}
+
+<div class="row">
+  <h1>{{ object.get_display_name }}</h1>
+  <div class="col-md-6">
+
+    {% if object.twitter %}
+    <div class="row">
+      <a href="https://twitter.com/{{ object.twitter }}" rel="external">
+        <i class="fa fa-fw fa-twitter"></i> @{{ object.twitter }}
+      </a>
+    </div>
+    {% endif %}
+
+    {% if object.website %}
+    <div class="row">
+      <a href="{{ object.website }}" rel="external">
+        <i class="fa fa-fw fa-link"></i> {{ object.website|domain }}
+      </a>
+    </div>
+    {% endif %}
+
+    {% if object.organisation %}
+    <div class="row">
+      <span><i class="fa fa-fw fa-building-o"></i> {{ object.organisation }}</span>
+    </div>
+    {% endif %}
+
+    {% if object.short_info %}
+    <div class="row">
+      {{ object.short_info|markdown:"safe" }}
+    </div>
+    {% endif %}
+
+    {% if object.interests %}
+    <div class="row">
+      <span>{% trans "Interested in" %}</span>
+      {% for tag in interests %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}
+    </div>
+    {% endif %}
+
+    {% if object.sessions %}
+    <div class="row">
+      <h2>{% trans "Sessions" %}</h2>
+      <ul>
+      {% for session in object.sessions %}
+        <li><a href="{{ session.get_absolute_url }}">{{ session.title }}</a></li>
+      {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-md-3">
+    <div class="well">
+    {% if object.avatar %}
+      <img src="{{ object.avatar.avatar.url }}" class="img-responsive" />
+    {% else %}
+      {% gravatar user.email 300 %}
+    {% endif %}
+    </div>
+  </div>
+
+  {% if request.user == object %}
+  <div class="col-md-3">
+    <ul class="nav nav-pills nav-stacked">
+      <li>
+        <h4>{% trans 'Account' %}</h4>
+      </li>
+      <li>
+        <a href="{% url 'account_profile_update' %}" class="btn btn-primary">{% trans "Update Account" %}</a>
+      </li>
+      <li>
+        <a href="{% url 'account_change_password' %}" class="btn btn-primary">{% trans "Change Password" %}</a>
+      </li>
+      <li>
+        <h4>{% trans 'Proposals' %}</h4>
+      </li>
+      <li>
+        <a href="{% url 'my_proposals' %}" class="btn btn-primary">{% trans "My proposals"%}</a>
+      </li>
+      {% if user.attendees_ticket_tickets.count or user.purchase_set.count or view.tickets_available %}
+      <li>
+        <h4>{% trans 'Tickets and Purchases' %}</h4>
+      </li>
+      {% if view.tickets_available %}
+      <li>
+        <a href="{% url 'attendees_purchase' %}" class="btn btn-primary">
+          {% trans "Purchase a Ticket" %}
+        </a>
+      </li>
+      {% endif %}
+      {% if user.attendees_ticket_tickets.count or user.purchase_set.count %}
+      <li>
+        <a href="{% url 'attendees_user_purchases' %}" class="btn btn-primary">
+          {% trans "My purchased Tickets" %}
+        </a>
+      </li>
+      {% endif %}
+      {% endif%}
+      {% if user.reviewer_set.count %}
+      <li>
+        <h4>{% trans 'Reviews' %}</h4>
+      </li>
+      <li>
+        <a href="{% url 'reviews-available-proposals' %}" class="btn btn-primary">
+          {% trans "List all Proposals" %}
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

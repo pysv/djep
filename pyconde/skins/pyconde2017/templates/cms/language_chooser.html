@@ -1,0 +1,14 @@
+{% load i18n menu_tags %}
+
+<ul class="nav navbar-nav navbar-right language-chooser">
+{% get_available_languages as languages %}
+{% for language in languages %}
+  {% language language.0 %}
+  <li class="language">
+    <a href="{% page_language_url language.0 %}" class="language-link{% ifequal current_language language.0 %} active{% endifequal %}" lang="{{ language.0 }}">
+      {{ language.0 }}
+    </a>
+  </li>
+  {% endlanguage %}
+{% endfor %}
+</ul>

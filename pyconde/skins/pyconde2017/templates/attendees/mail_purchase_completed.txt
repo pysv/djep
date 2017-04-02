@@ -1,0 +1,64 @@
+{# This is a plaintext email #}{% load i18n %}{% autoescape off %}{% blocktrans with first_name=purchase.first_name last_name=purchase.last_name %}Hello {{ first_name }} {{ last_name }},{% endblocktrans %}
+
+{% trans "You've purchased following tickets:" %}
+---------------------------------------------------------
+{% for ticket in purchase.ticket_set.all %}- {{ ticket.ticket_type.name }} {% with real_ticket=ticket.real_ticket %}{% if real_ticket.first_name or real_ticket.last_name %}({{ real_ticket.first_name }} {{ real_ticket.last_name }}){% endif %}{% endwith %}, {{ ticket.ticket_type.fee|floatformat:2 }} EUR
+{% endfor %}
+--------------------------------------------------------
+{% trans "VAT (19%)" %}:  {{ rounded_vat }} EUR
+--------------------------------------------------------
+{% trans "Total" %}: {{ purchase.payment_total|floatformat:2 }} EUR
+========================================================
+
+{% trans "Payment method" %}: {{ payment_method }}
+
+{% trans "Billing address" %}:
+{{ purchase.company_name }}
+{{ purchase.first_name }} {{ purchase.last_name }}
+{{ purchase.street }}
+{{ purchase.zip_code }} {{ purchase.city }}
+{{ purchase.country }}
+{% if purchase.vat_id %}{% trans "Tax ID" %}: {{ purchase.vat_id }}{% endif %}
+
+{% if purchase.comments %}{% trans "Comment" %}:
+{{ purchase.comments}}{% endif %}
+
+{% if terms_of_use_url %}{% trans "Purchasing a ticket requires agreeing to the terms of service. These can be found here:" %}
+{{ terms_of_use_url }}{% endif %}
+
+{% if purchase.payment_method == 'invoice' and purchase.send_invoice_to_user %}
+{% trans "During the next couple of days you will receive an invoice via e-mail." %}
+{% trans "You can check your payment status in your profile. The incoming payments are checked at least twice a week." %}
+{% trans "If you have any problems with the payment, please contact us ASAP!" %}
+{% elif purchase.payment_method == 'credit_card' %}
+{% trans "As soon as your purchase has been processed you will receive another e-mail." %}
+{% endif %}
+
+{% trans "Conference material will be handed out at the conference." %}
+
+{% blocktrans with purchase_id=purchase.id invoice_number=purchase.full_invoice_number %}Payment/Processing issues
+
+If you have any questions regarding your purchase please include the following information:
+
+    Purchase ID: {{ purchase_id }}
+    Invoice Number: {{ invoice_number }}
+
+This allows us to quickly identify your purchase and assist you accordingly.
+{% endblocktrans %}
+
+{% blocktrans %}Revocation Rights Notice
+
+Applications may be revoked by you, the applicant, within 14 days without stating any reason, in text form (e.g. letter, fax, email). The 14­ day period begins on receipt of this notice, earliest however on contract formation and not before fulfilment of the duty of information on the part of the Host.
+
+The revocation is effected on time if sent within the foregoing period for revocation. The revocation is to be sent to:
+
+by e­-mail to: info@pycon.de
+by post to:   Python Software Verband e.V., Schulstraße 20, 15366 Neuenhagen bei Berlin, Germany
+by fax to:    +49 3342 211999­5
+
+Consequences of revocation
+
+In the event of valid revocation, any performance already received by either party shall be returned along with the proceeds of any use thereof (e.g. interest). If you cannot return performance or proceeds of use, or only in deteriorated condition, then you must compensate us. The duty to return payments must be fulfilled within 30 days. For you, this period begins on sending your revocation; for us, on receipt thereof.{% endblocktrans %}
+
+--{% endautoescape %}
+{% include "attendees/mail_signature.txt" %}

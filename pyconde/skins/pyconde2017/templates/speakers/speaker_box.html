@@ -1,0 +1,11 @@
+{% load thumbnail gravatar %}
+<div class="speaker-box">
+    <div>
+    {% if avatar %}
+      <img src="{{ avatar.url }}" class="img-responsive" />
+    {% else %}
+      {% gravatar user.email 300 %}
+    {% endif %}
+    </div>
+    <span class="name">{{ name }}</span>
+</div>

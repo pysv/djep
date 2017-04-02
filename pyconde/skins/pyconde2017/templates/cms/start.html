@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load cms_tags static %}
+{% block bodyclass %}fullscreen-image-background{% endblock %}
+
+{% block hero_content %}
+<div id="hero-unit" class="hero-unit">
+    <div class="hero-content text-center">
+        <!-- Hero text -->
+        <div id="slidecaption" class="slide-caption">
+            <div class="hero-text">
+                {% placeholder hero_text%}
+            </div>
+            <div class="hero-buttons">
+                {% placeholder hero_buttons %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block main %}
+<div id="main-content" class="main-content">
+    {% placeholder main_content %}
+</div>
+{% endblock %}
