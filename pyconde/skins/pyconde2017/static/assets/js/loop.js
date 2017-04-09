@@ -4,10 +4,14 @@ jQuery( function($){
     /* PAGE LOADER
     /*---------------------*/
 
-    $('body').jpreLoader({
-        showSplash: false,
-        loaderVPos: "50%"
-    });
+    if $('body').hasClass('fullscreen-image-background') {
+        $('body').jpreLoader({
+            showSplash: false,
+            loaderVPos: "50%"
+        });
+    } else {
+        $('#jpreOverlay').fadeOut();
+    }
 
 
     /*----------------------/
