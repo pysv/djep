@@ -4,7 +4,7 @@ jQuery( function($){
     /* PAGE LOADER
     /*---------------------*/
 
-    if $('body').hasClass('fullscreen-image-background') {
+    if ($('body').hasClass('fullscreen-image-background')) {
         $('body').jpreLoader({
             showSplash: false,
             loaderVPos: "50%"
