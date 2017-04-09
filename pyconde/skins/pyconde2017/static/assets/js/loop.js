@@ -11,6 +11,7 @@ jQuery( function($){
         });
     } else {
         $('#jpreOverlay').fadeOut();
+        $('body').fadeIn();
     }
 
 
