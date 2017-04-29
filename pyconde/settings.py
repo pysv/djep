@@ -573,7 +573,8 @@ class Staging(Base):
 
 
 class Production(Base):
-    pass
+
+    COMPRESS_ENABLED = values.BooleanValue(False)
 
 #    INSTALLED_APPS = Base.INSTALLED_APPS + [
 #        'raven.contrib.django.raven_compat',
