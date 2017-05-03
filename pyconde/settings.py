@@ -578,7 +578,24 @@ class Production(Base):
 
     LOGGING = {
         'version': 1,
-        'disable_existing_loggers': False
+        'disable_existing_loggers': False,
+        'formatters': {
+            'simple': {
+                'format': '%(levelname)s  %(module)s %(message)s'
+            },
+        },
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'simple'
+            }
+        },
+        'loggers': {
+            '': {
+                'handlers': ['console'],
+            },
+        }
     }
 
 #    INSTALLED_APPS = Base.INSTALLED_APPS + [
