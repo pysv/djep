@@ -576,6 +576,11 @@ class Production(Base):
 
     COMPRESS_ENABLED = values.BooleanValue(False)
 
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False
+    }
+
 #    INSTALLED_APPS = Base.INSTALLED_APPS + [
 #        'raven.contrib.django.raven_compat',
 #    ]
